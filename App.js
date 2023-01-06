@@ -1,30 +1,42 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Root from "./navigation/Root";
-import * as Font from "expo-font";
-import AppLoading from "expo-app-loading";
 
-const getFonts = () =>
-  Font.loadAsync({
-    "SongMyung-Regular": require("./assets/fonts/SongMyung-Regular.ttf"),
-  });
+import * as SplashScreen from "expo-splash-screen";
+import { loadAsync } from "expo-font";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-  if (fontsLoaded) {
-    return (
-      <NavigationContainer>
-        <Root />
-      </NavigationContainer>
-    );
-  } else {
-    return (
-      <AppLoading
-        startAsync={getFonts} // 요구된 data 및 asset을 미리 로드한다.
-        onFinish={() => setFontsLoaded(true)} //startAsync가 끝났을 때 실행되고, 다시 렌더링이 일어난다.
-        onError={console.warn} // startAsync 에서 오류 발생 시 실행
-      />
-    );
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    const prepare = async () => {
+      await loadAsync({
+        "NotoSansKR-Regular": require("./assets/fonts/NotoSansKR-Regular.otf"),
+      });
+      setAppIsReady(true);
+    };
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  useEffect(() => {
+    onLayoutRootView();
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
   }
+
+  return (
+    <NavigationContainer>
+      <Root />
+    </NavigationContainer>
+  );
 }

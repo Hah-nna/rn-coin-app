@@ -29,7 +29,8 @@ export default function Main() {
               navigate("Stacks", {
                 screen: "detail",
               })
-            }>
+            }
+          >
             <TopRateCoin>
               <Image
                 source={{ uri: "https://cryptoicons.org/api/icon/xrp/500" }}
@@ -97,6 +98,7 @@ const TopRateLogo = styled.View`
 const TopRateCoinName = styled.Text`
   font-size: 28px;
   font-weight: bold;
+  font-family: NotoSansKR-Regular;
 `;
 
 const TopRateCoinPrice = styled.Text`
