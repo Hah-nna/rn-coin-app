@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
+import Weather from "../components/Weather";
 
 export default function Board() {
   return (
@@ -18,7 +19,9 @@ export default function Board() {
         <StatusBar style="auto" />
         <HeaderContainer>
           <River />
-          <Weather />
+          <WeatherView>
+            <Weather />
+          </WeatherView>
         </HeaderContainer>
 
         <SayingContainer>
@@ -39,7 +42,8 @@ export default function Board() {
           <PostContainer>
             <PostItem>
               <PostItemText
-                style={{ fontSize: "12px", marginLeft: 4, marginBottom: 8 }}>
+                style={{ fontSize: "12px", marginLeft: 4, marginBottom: 8 }}
+              >
                 이름
               </PostItemText>
               <PostItemText style={{ fontSize: "16px", marginLeft: 8 }}>
@@ -70,7 +74,6 @@ const HeaderContainer = styled.View`
   height: 100px;
   flex-direction: row;
   justify-content: center;
-  background-color: blue;
   margin-bottom: 12px;
 `;
 const River = styled.View`
@@ -78,10 +81,11 @@ const River = styled.View`
   background-color: red;
   margin-right: 5px;
 `;
-const Weather = styled.View`
+const WeatherView = styled.View`
   flex: 1;
-  background-color: black;
   margin-left: 5px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SayingContainer = styled.View`
