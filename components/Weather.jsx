@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import * as Location from "expo-location";
+import styled from "@emotion/native";
+import clear from "../weather-img/clear.png";
+import cloud from "../weather-img/cloud.png";
+import rain from "../weather-img/rain.png";
+import snow from "../weather-img/snow.png";
+import storm from "../weather-img/storm.png";
 
 const Weather = () => {
   const [city, setCity] = useState("");
@@ -31,10 +37,31 @@ const Weather = () => {
   return (
     <View>
       <Text>{city}</Text>
-      <Text>{weather}</Text>
-      <Text>{temp}</Text>
+      <Text>
+        {weather.toLowerCase().includes("clear") ? (
+          <StWeatherImg source={clear} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("clouds") ? (
+          <StWeatherImg source={cloud} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("rain") ? (
+          <StWeatherImg source={rain} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("snow") ? (
+          <StWeatherImg source={snow} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("thunderstorm") ? (
+          <StWeatherImg source={storm} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("mist") ? (
+          <StWeatherImg source={clear} alt="weatherImg" />
+        ) : (
+          weather
+        )}
+      </Text>
+      <Text>{temp} °C</Text>
     </View>
   );
 };
 
 export default Weather;
+
+const StWeatherImg = styled.Image`
+  width: 30px;
+  height: 30px;
+`;
