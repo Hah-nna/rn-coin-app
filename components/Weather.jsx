@@ -47,17 +47,17 @@ const Weather = () => {
       <Text>{city}</Text>
       <Text>
         {weather.toLowerCase().includes("clear") ? (
-          <StWeatherImg source={clear} alt="weatherImg" />
+          <WeatherImg source={clear} alt="weatherImg" />
         ) : weather.toLowerCase().includes("clouds") ? (
-          <StWeatherImg source={cloud} alt="weatherImg" />
+          <WeatherImg source={cloud} alt="weatherImg" />
         ) : weather.toLowerCase().includes("rain") ? (
-          <StWeatherImg source={rain} alt="weatherImg" />
+          <WeatherImg source={rain} alt="weatherImg" />
         ) : weather.toLowerCase().includes("snow") ? (
-          <StWeatherImg source={snow} alt="weatherImg" />
+          <WeatherImg source={snow} alt="weatherImg" />
         ) : weather.toLowerCase().includes("thunderstorm") ? (
-          <StWeatherImg source={storm} alt="weatherImg" />
+          <WeatherImg source={storm} alt="weatherImg" />
         ) : weather.toLowerCase().includes("mist") ? (
-          <StWeatherImg source={clear} alt="weatherImg" />
+          <WeatherImg source={clear} alt="weatherImg" />
         ) : (
           weather
         )}
@@ -69,7 +69,7 @@ const Weather = () => {
 
 export default Weather;
 
-const StWeatherImg = styled.Image`
+const WeatherImg = styled.Image`
   width: 30px;
   height: 30px;
 `;
