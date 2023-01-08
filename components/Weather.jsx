@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
 import styled from "@emotion/native";
 import clear from "../weather-img/clear.png";
@@ -33,6 +33,14 @@ const Weather = () => {
         });
     })();
   }, []);
+
+  if (city === "" || weather === "" || temp === "") {
+    return (
+      <View>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <View>
