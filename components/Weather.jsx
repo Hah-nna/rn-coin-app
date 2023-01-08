@@ -19,7 +19,9 @@ const Weather = () => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        alert("위치에 대한 액세스 권한이 거부되었습니다");
+        alert(
+          "위치에 대한 액세스 권한이 거부되었습니다. 설정에서 권한을 허용해주세요."
+        );
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
@@ -43,7 +45,7 @@ const Weather = () => {
   }
 
   return (
-    <View>
+    <WeatherContainer>
       <Text>{city}</Text>
       <Text>
         {weather.toLowerCase().includes("clear") ? (
@@ -63,12 +65,17 @@ const Weather = () => {
         )}
       </Text>
       <Text>{temp} °C</Text>
-    </View>
+    </WeatherContainer>
   );
 };
 
 export default Weather;
 
+const WeatherContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 const WeatherImg = styled.Image`
   width: 30px;
   height: 30px;
