@@ -22,35 +22,26 @@ import { useInfiniteQuery, useQueryClient } from "react-query";
 // <Logo source={require("../assets/icon.png")} />
 export default function Main() {
   const { data, isLoading } = useQuery("topCoins", getTopCoins);
-
   const {
     data: coins,
-    // isLoading: isLoadingNP,
-    isRefetching,
-  } = useInfiniteQuery(["infinitePersons"], () => getCoinList(), {
-    getNextPageParam: (lastPage, allPages) => {
-      return false;
-      // 다음 페이지 요청에 사용될 pageParam값 return 하기
-      // return true; // 여기서는 pageParam을 따로 사용하지 않기 떄문에 true return
+    isLoading: isLoadingCL,
+    error,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(["getCoins"], getCoinList, {
+    getNextPageParam: (lastPage) => {
+      return lastPage.page + 1;
     },
   });
+  // console.log('coins : ', coins);
+  const fetchMore = async () => {
+    // fetch next page!
+    if (hasNextPage) {
+      await fetchNextPage();
+    }
+  };
 
-  // if (coins) {
-  // console.log(" coins : ", coins.pages[0].data);
-
-  // for (let i of Object.values(coins)) {
-  //   console.log(i);
-  // }
-
-  // console.log(" coins : ", coins.pages[0]);
-  // console.log(" coins : ", coins.pageParams);
-  // }
-
-  // useEffect(() => {
-  //   console.log(" coins : ", coins.pageParams);
-  // }, [coins]);
-
-  if (isLoading) {
+  if (isLoading || isLoadingCL) {
     return <Text>Loading...</Text>;
   }
 
@@ -76,9 +67,11 @@ export default function Main() {
           </TouchableOpacity>
         </ListHeader>
         <CoinContainer
-          data={coins}
-          renderItem={({ coins }) => <CoinListItem item={coins} />}
-          // renderItem={getTopCoins.}
+          onEndReached={fetchMore}
+          onEndReachedThreshold={0.5}
+          data={coins.pages.map((page) => page.data).flat()}
+          renderItem={({ item }) => <CoinListItem coins={item} />}
+          keyExtractor={(item) => item.id}
         />
       </Container>
     </SafeAreaView>
@@ -118,5 +111,4 @@ const ListHeaderText = styled.Text`
 
 const CoinContainer = styled.FlatList`
   flex: 2.2;
-  background-color: black;
 `;
