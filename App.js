@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();

@@ -11,6 +11,8 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import FamousSaying from "../components/FamousSaying";
+import Weather from "../components/Weather";
+import River from "../components/River";
 
 export default function Board() {
   return (
@@ -18,8 +20,12 @@ export default function Board() {
       <Container>
         <StatusBar style="auto" />
         <HeaderContainer>
-          <River />
-          <Weather />
+          <RiverView>
+            <River />
+          </RiverView>
+          <WeatherView>
+            <Weather />
+          </WeatherView>
         </HeaderContainer>
 
         <SayingContainer>
@@ -42,6 +48,7 @@ export default function Board() {
             <PostItem>
               <PostItemText
                 style={{ fontSize: 12, marginLeft: 4, marginBottom: 8 }}
+
               >
                 이름
               </PostItemText>
@@ -73,18 +80,17 @@ const HeaderContainer = styled.View`
   height: 100px;
   flex-direction: row;
   justify-content: center;
-  background-color: blue;
   margin-bottom: 12px;
 `;
-const River = styled.View`
+const RiverView = styled.View`
   flex: 1;
-  background-color: red;
   margin-right: 5px;
 `;
-const Weather = styled.View`
+const WeatherView = styled.View`
   flex: 1;
-  background-color: black;
   margin-left: 5px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SayingContainer = styled.View`
