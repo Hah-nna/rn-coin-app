@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, TouchableOpacity, useColorScheme } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import Detail from "../screen/Detail";
 
 const Stack = createNativeStackNavigator();
@@ -18,7 +18,8 @@ export default function Stacks({ navigation: { goBack } }) {
         형태로 바로 넣을 수 있음.*/}
           </TouchableOpacity>
         ),
-      }}>
+      }}
+    >
       <Stack.Screen name="detail" component={Detail} />
     </Stack.Navigator>
   );

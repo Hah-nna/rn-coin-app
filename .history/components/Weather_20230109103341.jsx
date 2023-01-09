@@ -44,34 +44,25 @@ const Weather = () => {
     );
   }
 
-  const getWeatherSrc = () => {
-    const weatherLowerCase = weather.toLowerCase();
-    if (weatherLowerCase.includes("clear")) {
-      return clear;
-    }
-    if (weatherLowerCase.includes("clouds")) {
-      return cloud;
-    }
-    if (weatherLowerCase.includes("rain")) {
-      return rain;
-    }
-    if (weatherLowerCase.includes("snow")) {
-      return snow;
-    }
-    if (weatherLowerCase.includes("thunderstorm")) {
-      return storm;
-    }
-    if (weatherLowerCase.includes("mist")) {
-      return clear;
-    }
-    return weather;
-  };
-
   return (
     <WeatherContainer>
       <Text>{city}</Text>
       <Text>
-        <WeatherImg source={getWeatherSrc()} alt="weatherImg" />
+        {weather.toLowerCase().includes("clear") ? (
+          <WeatherImg source={clear} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("clouds") ? (
+          <WeatherImg source={cloud} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("rain") ? (
+          <WeatherImg source={rain} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("snow") ? (
+          <WeatherImg source={snow} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("thunderstorm") ? (
+          <WeatherImg source={storm} alt="weatherImg" />
+        ) : weather.toLowerCase().includes("mist") ? (
+          <WeatherImg source={clear} alt="weatherImg" />
+        ) : (
+          weather
+        )}
       </Text>
       <Text>{temp} °C</Text>
     </WeatherContainer>
@@ -86,7 +77,6 @@ const WeatherContainer = styled.View`
   align-items: center;
 `;
 const WeatherImg = styled.Image`
-  width: 40px;
-  height: 40px;
-  margin-top: 8px;
+  width: 30px;
+  height: 30px;
 `;

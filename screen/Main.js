@@ -7,13 +7,52 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import Swiper from "react-native-swiper";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { useEffect } from "react";
+import MainTopCoins from "../components/MainTopCoins";
+import { useQuery } from "react-query";
+import { getCoinList, getTopCoins } from "../api";
+import CoinListItem from "../components/CoinListItem";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 
 // <Logo source={require("../assets/icon.png")} />
 export default function Main() {
-  const { navigate } = useNavigation();
+  const { data, isLoading } = useQuery("topCoins", getTopCoins);
+
+  const {
+    data: coins,
+    // isLoading: isLoadingNP,
+    isRefetching,
+  } = useInfiniteQuery(["infinitePersons"], () => getCoinList(), {
+    getNextPageParam: (lastPage, allPages) => {
+      return false;
+      // 다음 페이지 요청에 사용될 pageParam값 return 하기
+      // return true; // 여기서는 pageParam을 따로 사용하지 않기 떄문에 true return
+    },
+  });
+
+  // if (coins) {
+  // console.log(" coins : ", coins.pages[0].data);
+
+  // for (let i of Object.values(coins)) {
+  //   console.log(i);
+  // }
+
+  // console.log(" coins : ", coins.pages[0]);
+  // console.log(" coins : ", coins.pageParams);
+  // }
+
+  // useEffect(() => {
+  //   console.log(" coins : ", coins.pageParams);
+  // }, [coins]);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
@@ -23,24 +62,11 @@ export default function Main() {
           <Logo source={require("../assets/icon.png")} />
         </HeaderContainer>
 
-        <Swiper>
-          <TouchableOpacity
-            onPress={() =>
-              navigate("Stacks", {
-                screen: "detail",
-              })
-            }
-          >
-            <TopRateCoin>
-              <Image
-                source={{ uri: "https://cryptoicons.org/api/icon/xrp/500" }}
-                style={{ width: 36, height: 36, marginBottom: 12 }}
-              />
-              <TopRateCoinName>BitCoin</TopRateCoinName>
-              <TopRateCoinPrice>90,000,000</TopRateCoinPrice>
-              <TopRateCoinPercent>-48.12%</TopRateCoinPercent>
-            </TopRateCoin>
-          </TouchableOpacity>
+        <Swiper autoplay={true} loop={true} showsPagination={false}>
+          {data &&
+            data.data
+              .slice(0, 5)
+              .map((coin) => <MainTopCoins key={coin.id} coin={coin} />)}
         </Swiper>
 
         <ListHeader>
@@ -49,18 +75,11 @@ export default function Main() {
             <ListHeaderText>▼ 거름망</ListHeaderText>
           </TouchableOpacity>
         </ListHeader>
-
-        <ScrollView>
-          <CoinContainer>
-            <TouchableOpacity>
-              <CoinItem>
-                <CoinItemText>안녕하세용</CoinItemText>
-                <CoinItemText>안녕하세용</CoinItemText>
-                <CoinItemText>안녕하세용</CoinItemText>
-              </CoinItem>
-            </TouchableOpacity>
-          </CoinContainer>
-        </ScrollView>
+        <CoinContainer
+          data={coins}
+          renderItem={({ coins }) => <CoinListItem item={coins} />}
+          // renderItem={getTopCoins.}
+        />
       </Container>
     </SafeAreaView>
   );
@@ -82,34 +101,6 @@ const Logo = styled.Image`
   margin-bottom: 10px;
 `;
 
-const TopRateCoin = styled.View`
-  height: 180px;
-  border-radius: 10px;
-  background-color: #efddae;
-  justify-content: center;
-  align-items: center;
-`;
-
-const TopRateLogo = styled.View`
-  flex-direction: "row";
-  justify-content: "center";
-`;
-
-const TopRateCoinName = styled.Text`
-  font-size: 28px;
-  font-weight: bold;
-  font-family: NotoSansKR-Regular;
-`;
-
-const TopRateCoinPrice = styled.Text`
-  font-size: 24px;
-`;
-
-const TopRateCoinPercent = styled.Text`
-  font-size: 18px;
-  color: red;
-`;
-
 const ListHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
@@ -125,24 +116,7 @@ const ListHeaderText = styled.Text`
   color: #a58224;
 `;
 
-const CoinContainer = styled.View`
-  flex: 1;
-  /* height: 100%; */
+const CoinContainer = styled.FlatList`
+  flex: 2.2;
   background-color: black;
-`;
-
-const CoinItem = styled.View`
-  height: 80px;
-  margin-bottom: 12px;
-  padding: 8px;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  border-radius: 10px;
-  background-color: #efddae;
-`;
-
-const CoinItemText = styled.Text`
-  color: #333;
-  font-weight: bold;
 `;
