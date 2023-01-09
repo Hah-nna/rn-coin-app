@@ -6,9 +6,10 @@ import * as SplashScreen from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
