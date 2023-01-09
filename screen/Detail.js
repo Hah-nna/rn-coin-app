@@ -1,56 +1,78 @@
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Linking,
-  StyleSheet,
-  useColorScheme,
-  Text,
-  View,
-  ImageBackground,
-} from "react-native";
+import { ActivityIndicator, Linking, StyleSheet, useColorScheme, Text, View, ImageBackground, Image } from "react-native";
 import styled from "@emotion/native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { useQuery } from "react-query";
+import { getCoinById } from "../api";
+import coinPriceSlice from "../util/coinPriceSlice";
 
-export default function Detail({ navigation: { navigate } }) {
+export default function Detail({
+  navigation: { navigate },
+  route: {
+    params: { coinId },
+  },
+}) {
+  const { data, isLoading, error } = useQuery(["detailCoin", coinId], getCoinById);
+
+  if (isLoading) {
+    return <Text>loading ...</Text>;
+  }
+
+  const {
+    data: {
+      name,
+      symbol,
+      last_updated,
+      quotes: {
+        KRW: { price, percent_change_15m, percent_change_30m, percent_change_1h, percent_change_24h, ath_price, percent_from_price_ath },
+      },
+    },
+  } = data;
+
   return (
     <Container>
-      <HeaderContainer>
-        <HeaderTitle>Coin Name</HeaderTitle>
-      </HeaderContainer>
-
-      <UpdatedDateContainer>
-        <UpdatedDate>2023.01.01</UpdatedDate>
-      </UpdatedDateContainer>
-
-      <View>
-        <BackgroundImg source={require("../assets/paper.png")}>
-          <CoinPrice>90,000,000</CoinPrice>
-          <CoinPercentContainer>
-            <CoinPercentItem>
-              <CoinPercentContent>왼쪽</CoinPercentContent>
-              <CoinPercentContent>오른쪽</CoinPercentContent>
-            </CoinPercentItem>
-            <CoinPercentItem>
-              <CoinPercentContent>왼쪽</CoinPercentContent>
-              <CoinPercentContent>오른쪽</CoinPercentContent>
-            </CoinPercentItem>
-            <CoinPercentItem>
-              <CoinPercentContent>왼쪽</CoinPercentContent>
-              <CoinPercentContent>오른쪽</CoinPercentContent>
-            </CoinPercentItem>
-            <CoinPercentItem>
-              <CoinPercentContent>왼쪽</CoinPercentContent>
-              <CoinPercentContent>오른쪽</CoinPercentContent>
-            </CoinPercentItem>
-          </CoinPercentContainer>
-          <HighFlowContainer>
-            <HighFlowTitle>고점 대비 흐름 : -75%</HighFlowTitle>
-            <HighFlowPrice>절대 다시 안 오는 가격</HighFlowPrice>
-          </HighFlowContainer>
-        </BackgroundImg>
-      </View>
+      {data && (
+        <>
+          <HeaderContainer>
+            <Image
+              source={{ uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500` }}
+              style={{ width: 36, height: 36, marginRight: 12 }}
+            />
+            <HeaderTitle>{name}</HeaderTitle>
+          </HeaderContainer>
+          <UpdatedDateContainer>
+            <UpdatedDate>{last_updated.split("T")[0]}</UpdatedDate>
+          </UpdatedDateContainer>
+          <View>
+            <BackgroundImg source={require("../assets/paper.png")}>
+              <CoinPrice>{coinPriceSlice(price)} 냥</CoinPrice>
+              <CoinPercentContainer>
+                <CoinPercentItem>
+                  <CoinPercentContent>15m</CoinPercentContent>
+                  <CoinPercentContent percent={percent_change_15m}>{percent_change_15m} %</CoinPercentContent>
+                </CoinPercentItem>
+                <CoinPercentItem>
+                  <CoinPercentContent>30m</CoinPercentContent>
+                  <CoinPercentContent percent={percent_change_30m}>{percent_change_30m} %</CoinPercentContent>
+                </CoinPercentItem>
+                <CoinPercentItem>
+                  <CoinPercentContent>1h</CoinPercentContent>
+                  <CoinPercentContent percent={percent_change_1h}>{percent_change_1h} %</CoinPercentContent>
+                </CoinPercentItem>
+                <CoinPercentItem>
+                  <CoinPercentContent>24h</CoinPercentContent>
+                  <CoinPercentContent percent={percent_change_24h}>{percent_change_24h} %</CoinPercentContent>
+                </CoinPercentItem>
+              </CoinPercentContainer>
+              <HighFlowContainer>
+                <HighFlowTitle>고점 대비 흐름 : {percent_from_price_ath} %</HighFlowTitle>
+                <HighFlowPrice>절대 다시 안 오는 가격 : {coinPriceSlice(ath_price)} 냥</HighFlowPrice>
+              </HighFlowContainer>
+            </BackgroundImg>
+          </View>
+        </>
+      )}
     </Container>
   );
 }
@@ -107,6 +129,7 @@ const CoinPercentItem = styled.View`
 `;
 const CoinPercentContent = styled.Text`
   font-size: 32px;
+  color: ${({ percent }) => (percent ? (percent < 0 ? "blue" : "red") : "black")};
 `;
 
 const HighFlowContainer = styled.View`
