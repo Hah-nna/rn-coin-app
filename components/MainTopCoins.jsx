@@ -1,6 +1,6 @@
 import styled from "@emotion/native";
 import { useNavigation } from "@react-navigation/native";
-import { Image, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import coinPriceSlice from "../util/coinPriceSlice";
 
 const MainTopCoins = ({ coin }) => {
@@ -13,6 +13,8 @@ const MainTopCoins = ({ coin }) => {
     },
   } = coin;
 
+  // console.log("coin : ", coin);
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -22,20 +24,26 @@ const MainTopCoins = ({ coin }) => {
             coinId: coin.id,
           },
         })
-      }
-    >
+      }>
       <TopRateCoin>
-        <Image source={{ uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500` }} style={{ width: 36, height: 36, marginBottom: 12 }} />
+        <Image
+          source={{
+            uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
+          }}
+          style={{ width: 36, height: 36, marginBottom: 12 }}
+        />
         <TopRateCoinName>{name}</TopRateCoinName>
         <TopRateCoinPrice>{coinPriceSlice(price)} 냥</TopRateCoinPrice>
-        <TopRateCoinPercent percent={percent_from_price_ath}>{percent_from_price_ath}%</TopRateCoinPercent>
+        <TopRateCoinPercent percent={percent_from_price_ath}>
+          {percent_from_price_ath}%
+        </TopRateCoinPercent>
       </TopRateCoin>
     </TouchableOpacity>
   );
 };
 
 const TopRateCoin = styled.View`
-  height: 180px;
+  padding: 20px 0;
   border-radius: 10px;
   background-color: #efddae;
   justify-content: center;
