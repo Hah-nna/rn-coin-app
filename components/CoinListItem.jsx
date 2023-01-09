@@ -1,35 +1,33 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import styled from "@emotion/native";
 import { useQuery } from "react-query";
 import { getTopCoins, getCoinById } from "../api";
+import coinPriceSlice from "../util/coinPriceSlice";
 
-export default function CoinListItem() {
-  //   const getRequestsQuery = useInfiniteQuery('queryKey', ({ pageParam = 0 }) => {
-  //     return RequestService.getRequests(pageParam);
-  // }, {
-  // getNextPageParam: (lastPageData: PageResult) => {
-  //   return lastPageData.last ? undefined : lastPageData.number + 1;
-  // },
-  // onSuccess: (result: InfiniteData<PageResult>) => {
-  //   console.log('==== Request 리스트 조회 성공 ====');
-  //   console.log(result);
-  // },
-  // onError: (err: AxiosError) => {
-  //   console.log(err.message);
-  // },
-  // keepPreviousData: true
-  // })
-
+export default function CoinListItem({ coins }) {
+  // console.log("coins : ", coins);
+  const {
+    name,
+    symbol,
+    quotes: {
+      KRW: { price, percent_from_price_ath },
+    },
+  } = coins;
   return (
     <TouchableOpacity>
       <CoinItem>
         <FirstItemContainer>
-          <CoinItemText>로고</CoinItemText>
-          <CoinItemText>심볼</CoinItemText>
+          <Image
+            source={{
+              uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
+            }}
+            style={{ width: 36, height: 36, marginBottom: 12 }}
+          />
+          <CoinItemText>{symbol}</CoinItemText>
         </FirstItemContainer>
-        <CoinItemText>이름</CoinItemText>
-        <CoinItemText>가격</CoinItemText>
+        <CoinItemText>{name}</CoinItemText>
+        <CoinItemText>{coinPriceSlice(price)} 냥</CoinItemText>
       </CoinItem>
     </TouchableOpacity>
   );
