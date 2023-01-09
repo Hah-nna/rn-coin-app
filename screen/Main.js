@@ -1,15 +1,10 @@
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
-import {
-  ScrollView,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { ScrollView, Text, View, SafeAreaView, Image, TouchableOpacity } from "react-native";
 import Swiper from "react-native-swiper";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { useEffect } from "react";
 
 // <Logo source={require("../assets/icon.png")} />
 export default function Main() {
@@ -32,10 +27,7 @@ export default function Main() {
             }
           >
             <TopRateCoin>
-              <Image
-                source={{ uri: "https://cryptoicons.org/api/icon/xrp/500" }}
-                style={{ width: 36, height: 36, marginBottom: 12 }}
-              />
+              <Image source={{ uri: "https://cryptoicons.org/api/icon/xrp/500" }} style={{ width: 36, height: 36, marginBottom: 12 }} />
               <TopRateCoinName>BitCoin</TopRateCoinName>
               <TopRateCoinPrice>90,000,000</TopRateCoinPrice>
               <TopRateCoinPercent>-48.12%</TopRateCoinPercent>
@@ -98,7 +90,7 @@ const TopRateLogo = styled.View`
 const TopRateCoinName = styled.Text`
   font-size: 28px;
   font-weight: bold;
-  font-family: NotoSansKR-Regular;
+  font-family: SongMyung-Regular;
 `;
 
 const TopRateCoinPrice = styled.Text`

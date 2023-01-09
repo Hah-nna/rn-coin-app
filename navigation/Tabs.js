@@ -17,9 +17,7 @@ const Tabs = () => {
         options={{
           title: "어서오세요.",
           tabBarLabel: "家",
-          tabBarIcon: (color, size) => (
-            <FontAwesome5 name="warehouse" size={20} color="#a58224" />
-          ),
+          tabBarIcon: (color, size) => <FontAwesome5 name="warehouse" size={20} color="#a58224" />,
         }}
         name="main"
         component={Main}
@@ -29,13 +27,7 @@ const Tabs = () => {
         options={{
           title: "놀음판",
           tabBarLabel: "놀음판",
-          tabBarIcon: (color, size) => (
-            <MaterialCommunityIcons
-              name="poker-chip"
-              size={24}
-              color="#a58224"
-            />
-          ),
+          tabBarIcon: (color, size) => <MaterialCommunityIcons name="poker-chip" size={24} color="#a58224" />,
         }}
         name="board"
         component={Board}
