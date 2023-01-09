@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
+import FamousSaying from "../components/FamousSaying";
 
 export default function Board() {
   return (
@@ -22,7 +23,8 @@ export default function Board() {
         </HeaderContainer>
 
         <SayingContainer>
-          <SayingContents>하이</SayingContents>
+          <FamousSaying />
+          {/* <Text>하하하</Text> */}
         </SayingContainer>
 
         <InputContainer>
@@ -39,10 +41,11 @@ export default function Board() {
           <PostContainer>
             <PostItem>
               <PostItemText
-                style={{ fontSize: "12px", marginLeft: 4, marginBottom: 8 }}>
+                style={{ fontSize: 12, marginLeft: 4, marginBottom: 8 }}
+              >
                 이름
               </PostItemText>
-              <PostItemText style={{ fontSize: "16px", marginLeft: 8 }}>
+              <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>
                 내용
               </PostItemText>
               <PostBtnContainer>
@@ -90,7 +93,8 @@ const SayingContainer = styled.View`
   align-items: center;
   height: 50px;
   margin-bottom: 12px;
-  background-color: yellow;
+  border: 1px solid #000;
+  padding: 2px;
 `;
 const SayingContents = styled.Text`
   font-weight: 500;
