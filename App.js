@@ -4,8 +4,11 @@ import Root from "./navigation/Root";
 
 import * as SplashScreen from "expo-splash-screen";
 import { loadAsync } from "expo-font";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -35,8 +38,10 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Root />
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <Root />
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
