@@ -5,10 +5,17 @@ import Swiper from "react-native-swiper";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { useEffect } from "react";
+import MainTopCoins from "../components/MainTopCoins";
+import { useQuery } from "react-query";
+import { getTopCoins } from "../api";
 
 // <Logo source={require("../assets/icon.png")} />
 export default function Main() {
-  const { navigate } = useNavigation();
+  const { data, isLoading } = useQuery("topCoins", getTopCoins);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
@@ -17,31 +24,13 @@ export default function Main() {
         <HeaderContainer>
           <Logo source={require("../assets/icon.png")} />
         </HeaderContainer>
-
-        <Swiper>
-          <TouchableOpacity
-            onPress={() =>
-              navigate("Stacks", {
-                screen: "detail",
-              })
-            }
-          >
-            <TopRateCoin>
-              <Image source={{ uri: "https://cryptoicons.org/api/icon/xrp/500" }} style={{ width: 36, height: 36, marginBottom: 12 }} />
-              <TopRateCoinName>BitCoin</TopRateCoinName>
-              <TopRateCoinPrice>90,000,000</TopRateCoinPrice>
-              <TopRateCoinPercent>-48.12%</TopRateCoinPercent>
-            </TopRateCoin>
-          </TouchableOpacity>
-        </Swiper>
-
+        <Swiper showsPagination={false}>{data && data.data.slice(0, 5).map((coin) => <MainTopCoins key={coin.id} coin={coin} />)}</Swiper>
         <ListHeader>
           <ListHeaderText>동전 장부</ListHeaderText>
           <TouchableOpacity>
             <ListHeaderText>▼ 거름망</ListHeaderText>
           </TouchableOpacity>
         </ListHeader>
-
         <ScrollView>
           <CoinContainer>
             <TouchableOpacity>
@@ -72,34 +61,6 @@ const Logo = styled.Image`
   width: 72px;
   height: 72px;
   margin-bottom: 10px;
-`;
-
-const TopRateCoin = styled.View`
-  height: 180px;
-  border-radius: 10px;
-  background-color: #efddae;
-  justify-content: center;
-  align-items: center;
-`;
-
-const TopRateLogo = styled.View`
-  flex-direction: "row";
-  justify-content: "center";
-`;
-
-const TopRateCoinName = styled.Text`
-  font-size: 28px;
-  font-weight: bold;
-  font-family: SongMyung-Regular;
-`;
-
-const TopRateCoinPrice = styled.Text`
-  font-size: 24px;
-`;
-
-const TopRateCoinPercent = styled.Text`
-  font-size: 18px;
-  color: red;
 `;
 
 const ListHeader = styled.View`
