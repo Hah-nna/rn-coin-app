@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import Weather from "../components/Weather";
+import River from "../components/River";
 
 export default function Board() {
   return (
@@ -18,7 +19,9 @@ export default function Board() {
       <Container>
         <StatusBar style="auto" />
         <HeaderContainer>
-          <River />
+          <RiverView>
+            <River />
+          </RiverView>
           <WeatherView>
             <Weather />
           </WeatherView>
@@ -76,9 +79,8 @@ const HeaderContainer = styled.View`
   justify-content: center;
   margin-bottom: 12px;
 `;
-const River = styled.View`
+const RiverView = styled.View`
   flex: 1;
-  background-color: red;
   margin-right: 5px;
 `;
 const WeatherView = styled.View`
