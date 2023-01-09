@@ -88,5 +88,5 @@ const WeatherContainer = styled.View`
 const WeatherImg = styled.Image`
   width: 40px;
   height: 40px;
-  margin-top: 8px;
+  margin-top: 4px;
 `;
