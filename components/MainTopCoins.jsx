@@ -24,7 +24,8 @@ const MainTopCoins = ({ coin }) => {
             coinId: coin.id,
           },
         })
-      }>
+      }
+    >
       <TopRateCoin>
         <Image
           source={{
@@ -53,7 +54,7 @@ const TopRateCoin = styled.View`
 const TopRateCoinName = styled.Text`
   font-size: 28px;
   font-weight: bold;
-  font-family: SongMyung-Regular;
+  /* font-family: SongMyung-Regular; */
 `;
 
 const TopRateCoinPrice = styled.Text`

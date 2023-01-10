@@ -1,56 +1,48 @@
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
-import {
-  ScrollView,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { Text, SafeAreaView, TextInput, View, Image } from "react-native";
 import Swiper from "react-native-swiper";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { useEffect } from "react";
 import MainTopCoins from "../components/MainTopCoins";
 import { useQuery } from "react-query";
-import { getCoinList, getTopCoins } from "../api";
+import { getCoinList, getTopCoins, searchCoin } from "../api";
 import CoinListItem from "../components/CoinListItem";
-import { useInfiniteQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery } from "react-query";
+import { useState } from "react";
+import coinPriceSlice from "../util/coinPriceSlice";
 
-// <Logo source={require("../assets/icon.png")} />
 export default function Main() {
+  const [searchCoinInfo, setSearchCoin] = useState("");
   const { data, isLoading } = useQuery("topCoins", getTopCoins);
-
+  const { data: searchCoinData } = useQuery("searchCoins", searchCoin);
+  const submitCoin = (text) => {
+    for (let i = 0; i < 2500; i++) {
+      if (searchCoinData.data[i].symbol.toLowerCase() === text.toLowerCase()) {
+        setSearchCoin(searchCoinData.data[i]);
+        return false;
+      } else {
+        setSearchCoin("");
+      }
+    }
+  };
   const {
     data: coins,
-    // isLoading: isLoadingNP,
-    isRefetching,
-  } = useInfiniteQuery(["infinitePersons"], () => getCoinList(), {
-    getNextPageParam: (lastPage, allPages) => {
-      return false;
-      // 다음 페이지 요청에 사용될 pageParam값 return 하기
-      // return true; // 여기서는 pageParam을 따로 사용하지 않기 떄문에 true return
+    isLoading: isLoadingCL,
+    error,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(["getCoins"], getCoinList, {
+    getNextPageParam: (lastPage) => {
+      return lastPage.page + 1;
     },
+    retry: 100,
   });
+  const fetchMore = async () => {
+    if (hasNextPage) {
+      await fetchNextPage();
+    }
+  };
 
-  // if (coins) {
-  // console.log(" coins : ", coins.pages[0].data);
-
-  // for (let i of Object.values(coins)) {
-  //   console.log(i);
-  // }
-
-  // console.log(" coins : ", coins.pages[0]);
-  // console.log(" coins : ", coins.pageParams);
-  // }
-
-  // useEffect(() => {
-  //   console.log(" coins : ", coins.pageParams);
-  // }, [coins]);
-
-  if (isLoading) {
+  if (isLoading || isLoadingCL) {
     return <Text>Loading...</Text>;
   }
 
@@ -61,7 +53,8 @@ export default function Main() {
         <HeaderContainer>
           <Logo source={require("../assets/icon.png")} />
         </HeaderContainer>
-
+        <ListHeaderText>今日 半時辰 基準 去來量 上位 五</ListHeaderText>
+        <DescText>(금일 반시진 기준 거래량 상위 다섯)</DescText>
         <Swiper autoplay={true} loop={true} showsPagination={false}>
           {data &&
             data.data
@@ -70,15 +63,35 @@ export default function Main() {
         </Swiper>
 
         <ListHeader>
-          <ListHeaderText>동전 장부</ListHeaderText>
-          <TouchableOpacity>
-            <ListHeaderText>▼ 거름망</ListHeaderText>
-          </TouchableOpacity>
+          <ListHeaderText>엽전 장부</ListHeaderText>
+          <SearchTextInput
+            placeholder="심볼 검색(ex. btc)"
+            onChangeText={submitCoin}
+          />
         </ListHeader>
+        {searchCoinInfo === "" ? (
+          <SearchView>
+            <Text style={{ color: "gray" }}>검색된 코인</Text>
+          </SearchView>
+        ) : (
+          <SearchView>
+            <Image
+              source={{
+                uri: `https://cryptoicons.org/api/icon/${searchCoinInfo.symbol.toLowerCase()}/500`,
+              }}
+              style={{ width: 24, height: 24, marginRight: 12 }}
+            />
+            <Text>{searchCoinInfo.symbol}</Text>
+            <Text>{searchCoinInfo.name}</Text>
+            <Text>{coinPriceSlice(searchCoinInfo.quotes.KRW.price)} 냥</Text>
+          </SearchView>
+        )}
         <CoinContainer
-          data={coins}
-          renderItem={({ coins }) => <CoinListItem item={coins} />}
-          // renderItem={getTopCoins.}
+          onEndReached={fetchMore}
+          onEndReachedThreshold={0.5}
+          data={coins.pages.map((page) => page.data).flat()}
+          renderItem={({ item }) => <CoinListItem coins={item} />}
+          keyExtractor={(item) => item.id}
         />
       </Container>
     </SafeAreaView>
@@ -105,18 +118,34 @@ const ListHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 12px 0;
+  padding: 4px 0;
   border-radius: 10px;
 `;
 
 const ListHeaderText = styled.Text`
   font-size: 16px;
   font-weight: bold;
-  padding: 8px;
+  padding: 0px 4px;
   color: #a58224;
 `;
-
+const DescText = styled.Text`
+  font-size: 8px;
+  padding: 4px;
+  color: #a58224;
+`;
 const CoinContainer = styled.FlatList`
-  flex: 2.2;
-  background-color: black;
+  flex: 2;
+`;
+const SearchView = styled.View`
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 40px;
+  margin: 8px;
+`;
+const SearchTextInput = styled.TextInput`
+  border: 1px solid gray;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
 `;
