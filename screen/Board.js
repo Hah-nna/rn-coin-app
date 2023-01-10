@@ -29,6 +29,15 @@ export default function Board() {
 
   const getPost = async () => {
     const getPostData = await axios.get("http://localhost:3001/posts");
+    // const getPostData = await axios.get("http://192.168.200.115:3001/posts");
+
+    /**
+     * json 서버를 열 때 본인의 ip주소를 맞추어야한다
+     * json 서버를 열 때 아래와 같이 입력한다
+     * yarn json-server --watch db.json --port 3001 --host 192.168.200.115(192~부터는 자신의 ip주소임)
+     * api.js에서 자신의 ip주소로 바꾸세요
+     */
+
     setPosts(getPostData.data);
   };
 
@@ -219,11 +228,13 @@ export default function Board() {
                       {item.isEdit ? (
                         <>
                           <EditInputId
+                            placeholder="개명할 존함을 작성해주세요."
                             value={editId}
                             onChangeText={setEditId}
                             onSubmitEditing={() => editPostValue(item)}
                           />
                           <EditInputContent
+                            placeholder="수정할 벽보 내용을 입력해주세요."
                             onChangeText={setEditContent}
                             onSubmitEditing={() => editPostValue(item)}
                             value={editContent}
@@ -250,6 +261,7 @@ export default function Board() {
                       <ConfirmInputPwContainer>
                         {item.isDelete && (
                           <ConfirmInputPw
+                            placeholder="암호"
                             onChangeText={setDeletePw}
                             onSubmitEditing={() =>
                               item.isEdit
@@ -374,20 +386,26 @@ const PostBtnContainer = styled.View`
 `;
 
 const EditInputContent = styled.TextInput`
-  background-color: lightblue;
+  padding-left: 12px;
+
   height: 30px;
 `;
 
 const EditInputId = styled.TextInput`
-  background-color: gray;
+  width: 65%;
+  padding-left: 8px;
   height: 30px;
+  font-size: 12px;
 `;
 
 const ConfirmInputPw = styled.TextInput`
-  background-color: yellow;
   height: 30px;
-  width: 60%;
+  width: 50%;
   flex-direction: row;
+  margin-bottom: 15px;
+  ::placeholder {
+    text-align: center;
+  }
 `;
 
 const ConfirmInputPwContainer = styled.View`
