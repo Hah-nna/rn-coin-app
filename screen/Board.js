@@ -9,6 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from "react-native";
+
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
 import River from "../components/River";
@@ -274,9 +275,6 @@ const SayingContainer = styled.View`
   margin-bottom: 12px;
   border: 1px solid #000;
   padding: 2px;
-`;
-const SayingContents = styled.Text`
-  font-weight: 500;
 `;
 
 const InputContainer = styled.View``;

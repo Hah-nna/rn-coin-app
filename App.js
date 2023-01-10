@@ -1,11 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import Root from "./navigation/Root";
-
+import { setCustomText } from "react-native-global-props";
 import * as SplashScreen from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { QueryClient, QueryClientProvider } from "react-query";
-
 
 SplashScreen.preventAutoHideAsync();
 
@@ -17,7 +16,7 @@ export default function App() {
   useEffect(() => {
     const prepare = async () => {
       await loadAsync({
-        "NotoSansKR-Regular": require("./assets/fonts/NotoSansKR-Regular.otf"),
+        "SongMyung-Regular": require("./assets/fonts/SongMyung-Regular.otf"),
       });
       setAppIsReady(true);
     };
@@ -37,6 +36,14 @@ export default function App() {
   if (!appIsReady) {
     return null;
   }
+
+  const customTextProps = {
+    style: {
+      fontFamily: "SongMyung-Regular",
+    },
+  };
+
+  setCustomText(customTextProps);
 
   return (
     <QueryClientProvider client={queryClient}>
