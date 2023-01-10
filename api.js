@@ -11,3 +11,6 @@ export const getCoinById = ({ queryKey }) => {
   const [_, coinId] = queryKey;
   return axios.get(`${BASE_URL}tickers/${coinId}?quotes=KRW`);
 };
+export const searchCoin = () => {
+  return axios.get(`${BASE_URL}tickers?quotes=KRW`);
+};
