@@ -7,11 +7,11 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
 import River from "../components/River";
-// import prompt from "react-native-prompt-android";
 
 export default function Board() {
   const [posts, setPosts] = useState([]);
@@ -23,8 +23,6 @@ export default function Board() {
   const [editContent, setEditContent] = useState("");
 
   const [deletePw, setDeletePw] = useState("");
-
-  console.log("posts22", posts);
 
   const newPost = {
     id: Date.now(),
@@ -61,49 +59,74 @@ export default function Board() {
     setPosts((prev) => [...prev, newPost]);
   };
 
-  const DeletePost = (item) => {
+  const deletePost = (id) => {
     const newPosts = [...posts];
-    const idx = newPost.findIndex((post) => post.id === item.id);
-    newPosts[idx].isDelete === !newPosts[idx].isDelete;
-    setPosts(newPosts);
+    const idx = newPosts.findIndex((post) => post.id === id);
+    newPosts[idx].isDelete = !newPosts[idx].isDelete;
 
-    if (item.userPw === userPw) {
-    }
-    Alert.alert("Todo 삭제", "정말 삭제하시겠습니까?", [
-      {
-        text: "취소",
-        style: "cancel",
-        onPress: () => console.log("취소 클릭!"),
-      },
-      {
-        text: "삭제",
-        style: "destructive",
-        onPress: async () => {
-          const newPosts = posts.filter((i) => i.id !== item.id);
-          setPosts(newPosts);
-        },
-      },
-    ]);
+    setPosts(newPosts);
   };
 
-  const EditPost = (id) => {
+  const deletePostValue = (item) => {
+    const newPosts = [...posts];
+    const idx = newPosts.findIndex((post) => post.id === item.id);
+    newPosts[idx].isDelete = false;
+    setPosts(newPosts);
+
+    if (item.userPw === deletePw) {
+      Alert.alert("Todo 삭제", "정말 삭제하시겠습니까?", [
+        {
+          text: "취소",
+          style: "cancel",
+          // onPress: () => console.log("취소 클릭!")
+        },
+        {
+          text: "삭제",
+          style: "destructive",
+          onPress: async () => {
+            const newPosts = posts.filter((i) => i.id !== item.id);
+            setPosts(newPosts);
+          },
+        },
+      ]);
+      return;
+    } else {
+      alert("암호가 틀렸습니다222");
+      return;
+    }
+  };
+
+  const editPost = (id) => {
     const newPosts = [...posts];
     const idx = newPosts.findIndex((post) => post.id === id);
     newPosts[idx].isEdit = !newPosts[idx].isEdit;
+    newPosts[idx].isDelete = !newPosts[idx].isDelete;
     setPosts(newPosts);
+    return;
   };
 
-  const EditPostValue = (item) => {
+  const editPostValue = (item) => {
     // id 값받아서 배열 요소찾기(idx)
     const newPosts = [...posts];
     const idx = newPosts.findIndex((post) => post.id === item.id);
-    newPosts[idx].userId = editId;
-    newPosts[idx].userPw = editPw;
-    newPosts[idx].content = editContent;
-    newPosts[idx].isEdit = false;
-    setPosts(newPosts);
-  };
+    if (item.userPw === deletePw) {
+      newPosts[idx].userId = editId;
+      newPosts[idx].content = editContent;
+      newPosts[idx].isEdit = false;
+      newPosts[idx].isDelete = false;
 
+      setPosts(newPosts);
+      return;
+    } else {
+      newPosts[idx].isEdit = false;
+      newPosts[idx].isDelete = false;
+      alert("암호가 틀렸습니다");
+
+      setPosts(newPosts);
+      console.log(newPosts[idx]);
+      return;
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
       <Container>
@@ -121,80 +144,99 @@ export default function Board() {
           <FamousSaying />
         </SayingContainer>
 
-        <InputContainer>
-          <InputTitle>벽보 붙이기</InputTitle>
-          <UserInfo>
-            <InputId
-              onSubmitEditing={addPost}
-              onChangeText={setUserId}
-              value={userId}
-              textContentType="username"
-              placeholder="존함"
-            />
-            <InputPw
-              onSubmitEditing={addPost}
-              onChangeText={setUserPw}
-              value={userPw}
-              textContentType="password"
-              placeholder="암호"
-            />
-          </UserInfo>
-          <InputContent
-            onSubmitEditing={addPost}
-            onChangeText={setContent}
-            value={content}
-            placeholder="Comment writing, PLZ ENTER "
-          />
-        </InputContainer>
-
         <ScrollView>
+          <InputContainer>
+            <InputTitle>벽보 붙이기</InputTitle>
+            <UserInfo>
+              <InputId
+                onSubmitEditing={addPost}
+                onChangeText={setUserId}
+                value={userId}
+                textContentType="username"
+                placeholder="존함"
+              />
+              <InputPw
+                onSubmitEditing={addPost}
+                onChangeText={setUserPw}
+                value={userPw}
+                textContentType="password"
+                placeholder="암호"
+              />
+            </UserInfo>
+            <InputContent
+              onSubmitEditing={addPost}
+              onChangeText={setContent}
+              value={content}
+              placeholder="Comment writing, PLZ ENTER "
+            />
+          </InputContainer>
+
           <InputTitle>놀음판 벽보</InputTitle>
           <PostContainer>
-            {posts.map((item) => {
-              return (
-                <PostItem key={item.id}>
-                  <PostInputContainer>
-                    {item.isEdit ? (
-                      <EditInputId
-                        value={editId}
-                        onChangeText={setEditId}
-                        onSubmitEditing={() => EditPostValue(item)}
-                      />
-                    ) : (
-                      <PostItemText
-                        style={{ fontSize: 12, marginLeft: 4, marginBottom: 8 }}
-                      >
-                        {item.userId}
-                      </PostItemText>
-                    )}
-                    {item.isEdit ? (
-                      <EditInputContent
-                        onChangeText={setEditContent}
-                        onSubmitEditing={() => EditPostValue(item)}
-                        value={editContent}
-                      />
-                    ) : (
-                      <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>
-                        {item.content}
-                      </PostItemText>
-                    )}
-                  </PostInputContainer>
-                  <ConfirmInputPwBtn>
-                    <ConfirmInputPwContainer>
-                      <ConfirmInputPw />
-                    </ConfirmInputPwContainer>
-                    <PostBtnContainer>
-                      <TouchableOpacity onPress={() => EditPost(item.id)}>
-                        <Text> 수정</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => DeletePost(item)}>
-                        <Text> 삭제</Text>
-                      </TouchableOpacity>
-                    </PostBtnContainer>
-                  </ConfirmInputPwBtn>
-                </PostItem>
-              );
-            })}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              {posts.map((item) => {
+                return (
+                  <PostItem key={item.id}>
+                    <PostInputContainer>
+                      {item.isEdit ? (
+                        <>
+                          <EditInputId
+                            value={editId}
+                            onChangeText={setEditId}
+                            onSubmitEditing={() => editPostValue(item)}
+                          />
+                          <EditInputContent
+                            onChangeText={setEditContent}
+                            onSubmitEditing={() => editPostValue(item)}
+                            value={editContent}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <PostItemText
+                            style={{
+                              fontSize: 12,
+                              marginLeft: 4,
+                              marginBottom: 8,
+                            }}
+                          >
+                            {item.userId}
+                          </PostItemText>
+                          <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>
+                            {item.content}
+                          </PostItemText>
+                        </>
+                      )}
+                    </PostInputContainer>
+                    <ConfirmInputPwBtn>
+                      <ConfirmInputPwContainer>
+                        {item.isDelete && (
+                          <ConfirmInputPw
+                            onChangeText={setDeletePw}
+                            onSubmitEditing={() =>
+                              item.isEdit
+                                ? editPostValue(item)
+                                : deletePostValue(item)
+                            }
+                            value={deletePw}
+                          />
+                        )}
+                      </ConfirmInputPwContainer>
+                      <PostBtnContainer>
+                        <TouchableOpacity onPress={() => editPost(item.id)}>
+                          <Text> 수정</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => deletePost(item.id)}>
+                          <Text> 삭제</Text>
+                        </TouchableOpacity>
+                      </PostBtnContainer>
+                    </ConfirmInputPwBtn>
+                  </PostItem>
+                );
+              })}
+            </KeyboardAvoidingView>
           </PostContainer>
         </ScrollView>
       </Container>
@@ -208,7 +250,7 @@ const Container = styled.View`
 `;
 
 const HeaderContainer = styled.View`
-  height: 100px;
+  height: 70px;
   flex-direction: row;
   justify-content: center;
   margin-bottom: 12px;
@@ -252,7 +294,7 @@ const UserInfo = styled.View`
 
 const InputId = styled.TextInput`
   width: 48%;
-  height: 40px;
+  height: 30px;
   padding: 0 12px;
   border: 1px solid #333;
   border-radius: 8px;
@@ -260,13 +302,13 @@ const InputId = styled.TextInput`
 
 const InputPw = styled.TextInput`
   width: 48%;
-  height: 40px;
+  height: 30px;
   padding: 0 12px;
   border: 1px solid #333;
   border-radius: 8px;
 `;
 const InputContent = styled.TextInput`
-  height: 80px;
+  height: 40px;
   margin-bottom: 12px;
   padding: 0 12px;
   border: 1px solid #333;
