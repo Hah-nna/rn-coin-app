@@ -11,7 +11,7 @@ export default function Stacks({ navigation: { goBack } }) {
       screenOptions={{
         headerTitleStyle: { fontFamily: "SongMyung-Regular" },
         headerTitle: "엽전 상세보기",
-        headerTitleAlign: "left",
+        headerTitleAlign: "center",
         headerLeft: () => (
           <TouchableOpacity onPress={() => goBack()}>
             <Text style={{ color: "#a58224" }}>과거로</Text>
