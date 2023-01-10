@@ -10,7 +10,6 @@ const FamousSaying = () => {
       const { data } = await axios.get(
         `https://api.qwer.pw/request/helpful_text?apikey=guest`
       );
-      //   console.log("ff", data);
       setSaying(data[1].respond);
     } catch (error) {
       console.log("error", error);
