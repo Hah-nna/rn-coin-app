@@ -1,28 +1,38 @@
 import React from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import styled from "@emotion/native";
-import { useQuery } from "react-query";
-import { getTopCoins, getCoinById } from "../api";
 import coinPriceSlice from "../util/coinPriceSlice";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CoinListItem({ coins }) {
-  // console.log("coins : ", coins);
+  const { navigate } = useNavigation();
   const {
+    id,
     name,
     symbol,
     quotes: {
       KRW: { price, percent_from_price_ath },
     },
   } = coins;
+
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() =>
+        navigate("Stacks", {
+          screen: "detail",
+          params: {
+            coinId: id,
+          },
+        })
+      }
+    >
       <CoinItem>
         <FirstItemContainer>
           <Image
             source={{
-              uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
+              uri: `https://static.coinpaprika.com/coin/${id}/logo.png`,
             }}
-            style={{ width: 36, height: 36, marginBottom: 12 }}
+            style={{ width: 24, height: 24, marginRight: 12 }}
           />
           <CoinItemText>{symbol}</CoinItemText>
         </FirstItemContainer>
@@ -35,15 +45,18 @@ export default function CoinListItem({ coins }) {
 
 const CoinItem = styled.View`
   margin-bottom: 12px;
-  padding: 20px 0px;
+  padding: 12px 16px;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   border-radius: 10px;
   background-color: #efddae;
 `;
 
-const FirstItemContainer = styled.View``;
+const FirstItemContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+`;
 
 const CoinItemText = styled.Text`
   color: #333;
