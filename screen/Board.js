@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
+import uuid from "react-native-uuid";
 import {
   ScrollView,
   Text,
@@ -13,6 +14,7 @@ import {
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
 import River from "../components/River";
+import axios from "axios";
 
 export default function Board() {
   const [posts, setPosts] = useState([]);
@@ -25,16 +27,16 @@ export default function Board() {
 
   const [deletePw, setDeletePw] = useState("");
 
-  const newPost = {
-    id: Date.now(),
-    userId,
-    userPw,
-    content,
-    isEdit: false,
-    isDelete: false,
+  const getPost = async () => {
+    const getPostData = await axios.get("http://localhost:3001/posts");
+    setPosts(getPostData.data);
   };
 
-  const addPost = () => {
+  useEffect(() => {
+    getPost();
+  }, []);
+
+  const addPost = async () => {
     const userIdValue = userId.trim();
     const userPwValue = userPw.trim();
     const contentValue = content.trim();
@@ -56,8 +58,25 @@ export default function Board() {
       setContent("");
       return;
     }
-
-    setPosts((prev) => [...prev, newPost]);
+    await axios.post("http://localhost:3001/posts", {
+      id: uuid.v4(),
+      userId,
+      userPw,
+      content,
+      isEdit: false,
+      isDelete: false,
+    });
+    setPosts((prev) => [
+      ...prev,
+      {
+        id: uuid.v4(),
+        userId,
+        userPw,
+        content,
+        isEdit: false,
+        isDelete: false,
+      },
+    ]);
   };
 
   const deletePost = (id) => {
@@ -85,8 +104,13 @@ export default function Board() {
           text: "삭제",
           style: "destructive",
           onPress: async () => {
-            const newPosts = posts.filter((i) => i.id !== item.id);
-            setPosts(newPosts);
+            try {
+              await axios.delete(`http://localhost:3001/posts/${item.id}`);
+              const newPosts = posts.filter((i) => i.id !== item.id);
+              setPosts(newPosts);
+            } catch (error) {
+              console.log("error : ", error);
+            }
           },
         },
       ]);
@@ -106,18 +130,29 @@ export default function Board() {
     return;
   };
 
-  const editPostValue = (item) => {
+  const editPostValue = async (item) => {
     // id 값받아서 배열 요소찾기(idx)
     const newPosts = [...posts];
     const idx = newPosts.findIndex((post) => post.id === item.id);
     if (item.userPw === deletePw) {
-      newPosts[idx].userId = editId;
-      newPosts[idx].content = editContent;
-      newPosts[idx].isEdit = false;
-      newPosts[idx].isDelete = false;
-
-      setPosts(newPosts);
-      return;
+      console.log("item.id : ", item.id);
+      try {
+        const newPost = {
+          userId: editId,
+          content: editContent,
+          isEdit: false,
+          isDelete: false,
+        };
+        newPosts[idx].userId = editId;
+        newPosts[idx].content = editContent;
+        newPosts[idx].isEdit = false;
+        newPosts[idx].isDelete = false;
+        await axios.patch(`http://localhost:3001/posts/${item.id}`, newPost);
+        setPosts(newPosts);
+        return;
+      } catch (error) {
+        console.log("error : ", error);
+      }
     } else {
       newPosts[idx].isEdit = false;
       newPosts[idx].isDelete = false;
