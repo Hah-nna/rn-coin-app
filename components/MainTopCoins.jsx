@@ -1,20 +1,16 @@
 import styled from "@emotion/native";
 import { useNavigation } from "@react-navigation/native";
-import { Image, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import coinPriceSlice from "../util/coinPriceSlice";
 
 const MainTopCoins = ({ coin }) => {
   const { navigate } = useNavigation();
   const {
     name,
-    symbol,
     quotes: {
       KRW: { price, percent_from_price_ath },
     },
   } = coin;
-
-  // console.log("coin : ", coin);
-
   return (
     <TouchableOpacity
       onPress={() =>
@@ -29,9 +25,9 @@ const MainTopCoins = ({ coin }) => {
       <TopRateCoin>
         <Image
           source={{
-            uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
+            uri: `https://static.coinpaprika.com/coin/${coin.id}/logo.png`,
           }}
-          style={{ width: 36, height: 36, marginBottom: 12 }}
+          style={{ width: 32, height: 32, marginBottom: 8 }}
         />
         <TopRateCoinName>{name}</TopRateCoinName>
         <TopRateCoinPrice>{coinPriceSlice(price)} 냥</TopRateCoinPrice>
@@ -44,7 +40,7 @@ const MainTopCoins = ({ coin }) => {
 };
 
 const TopRateCoin = styled.View`
-  padding: 20px 0;
+  padding: 16px 0;
   border-radius: 10px;
   background-color: #efddae;
   justify-content: center;
@@ -53,12 +49,11 @@ const TopRateCoin = styled.View`
 
 const TopRateCoinName = styled.Text`
   font-size: 28px;
-  font-weight: bold;
-  /* font-family: SongMyung-Regular; */
 `;
 
 const TopRateCoinPrice = styled.Text`
-  font-size: 24px;
+  margin: 4px 0;
+  font-size: 20px;
 `;
 
 const TopRateCoinPercent = styled.Text`

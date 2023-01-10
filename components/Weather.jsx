@@ -70,9 +70,7 @@ const Weather = () => {
   return (
     <WeatherContainer>
       <Text>{city}</Text>
-      <Text>
-        <WeatherImg source={getWeatherSrc()} alt="weatherImg" />
-      </Text>
+      <WeatherImg source={getWeatherSrc()} alt="weatherImg" />
       <Text>{temp} °C</Text>
     </WeatherContainer>
   );

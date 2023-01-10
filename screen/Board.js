@@ -1,15 +1,7 @@
 import React from "react";
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
-import {
-  ScrollView,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from "react-native";
+import { ScrollView, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
 import River from "../components/River";
@@ -48,7 +40,6 @@ export default function Board() {
             <PostItem>
               <PostItemText
                 style={{ fontSize: 12, marginLeft: 4, marginBottom: 8 }}
-
               >
                 이름
               </PostItemText>
@@ -101,9 +92,6 @@ const SayingContainer = styled.View`
   margin-bottom: 12px;
   border: 1px solid #000;
   padding: 2px;
-`;
-const SayingContents = styled.Text`
-  font-weight: 500;
 `;
 
 const InputContainer = styled.View``;
