@@ -1,9 +1,8 @@
-import { BLUE_COLOR, WHITE_COLOR } from "./colors";
-
 export const lightTheme = {
-  title: BLUE_COLOR,
+  title: "black",
+  backgroundColor: "#efddae",
 };
-
 export const darkTheme = {
-  title: WHITE_COLOR,
+  title: "white",
+  backgroundColor: "#273c75",
 };

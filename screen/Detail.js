@@ -43,7 +43,7 @@ export default function Detail({
             <HeaderContainer>
               <Image
                 source={{
-                  uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
+                  uri: `https://static.coinpaprika.com/coin/${coinId}/logo.png`,
                 }}
                 style={{ width: 36, height: 36, marginRight: 12 }}
               />
@@ -103,7 +103,7 @@ export default function Detail({
 
 const Container = styled.View`
   flex: 1;
-  background-color: #efddae;
+  background-color: ${({ theme }) => theme.backgroundColor};
 `;
 
 const HeaderContainer = styled.View`
@@ -115,6 +115,7 @@ const HeaderContainer = styled.View`
 const HeaderTitle = styled.Text`
   font-size: 32px;
   text-align: center;
+  color: ${({ theme }) => theme.title};
 `;
 
 const UpdatedDateContainer = styled.View`

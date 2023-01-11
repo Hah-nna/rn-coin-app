@@ -5,6 +5,9 @@ import { setCustomText } from "react-native-global-props";
 import * as SplashScreen from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { useColorScheme } from "react-native";
+import { darkTheme, lightTheme } from "./theme";
+import { ThemeProvider } from "@emotion/react";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,6 +36,8 @@ export default function App() {
     onLayoutRootView();
   }, [appIsReady]);
 
+  const isDark = useColorScheme() === "dark";
+
   if (!appIsReady) {
     return null;
   }
@@ -47,9 +52,11 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <Root />
-      </NavigationContainer>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <NavigationContainer>
+          <Root />
+        </NavigationContainer>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -39,6 +39,7 @@
     "react-query": "^3.39.2",
     "react-router-dom": "^6.6.1",
     "rnpm": "^1.9.0",
+    "styled-components": "^5.3.6",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

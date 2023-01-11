@@ -78,6 +78,10 @@ export default function Board() {
         queryClient.invalidateQueries("posts");
       },
     });
+
+    setUserId("");
+    setUserPw("");
+    setContent("");
   };
   const deletePost = (item) => {
     const itemData = {
