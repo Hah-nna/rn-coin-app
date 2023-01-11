@@ -277,7 +277,7 @@ export default function Board() {
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => deletePost(item)}>
                             <Text>
-                              {item.isEdit && item.isDelete === false
+                              {item.isDelete && item.isEdit === false
                                 ? "취소"
                                 : "삭제"}
                             </Text>
