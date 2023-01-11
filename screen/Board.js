@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
 import uuid from "react-native-uuid";
@@ -14,10 +14,12 @@ import {
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
 import River from "../components/River";
-import axios from "axios";
+import { createPost, getPost, removePost, updatePost } from "../api";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 export default function Board() {
-  const [posts, setPosts] = useState([]);
+  const queryClient = useQueryClient();
+
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
   const [content, setContent] = useState("");
@@ -27,23 +29,18 @@ export default function Board() {
 
   const [deletePw, setDeletePw] = useState("");
 
-  const getPost = async () => {
-    const getPostData = await axios.get("http://192.168.35.126:3001/posts");
-    // const getPostData = await axios.get("http://192.168.200.115:3001/posts");
-
-    /**
-     * json 서버를 열 때 본인의 ip주소를 맞추어야한다
-     * json 서버를 열 때 아래와 같이 입력한다
-     * yarn json-server --watch db.json --port 3001 --host 192.168.35.126(192~부터는 자신의 ip주소임)
-     * api.js에서 자신의 ip주소로 바꾸세요
-     */
-
-    setPosts(getPostData.data);
-  };
-
-  useEffect(() => {
-    getPost();
-  }, []);
+  const {
+    isLoading: getLoading,
+    isError,
+    data,
+    error,
+  } = useQuery("posts", getPost);
+  const { isLoading: createLoading, mutate: createMutate } =
+    useMutation(createPost);
+  const { isLoading: editLoading, mutate: updateMutate } =
+    useMutation(updatePost);
+  const { isLoading: deleteLoading, mutate: deleteMutate } =
+    useMutation(removePost);
 
   const addPost = async () => {
     const userIdValue = userId.trim();
@@ -75,95 +72,96 @@ export default function Board() {
       isEdit: false,
       isDelete: false,
     };
-    await axios.post("http://192.168.35.126:3001/posts", todoItem);
-    setPosts((prev) => [...prev, todoItem]);
+
+    createMutate(todoItem, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("posts");
+      },
+    });
   };
-  const deletePost = (id) => {
-    const newPosts = [...posts];
-    const idx = newPosts.findIndex((post) => post.id === id);
-    newPosts[idx].isDelete = !newPosts[idx].isDelete;
-    setPosts(newPosts);
+  const deletePost = (item) => {
+    const itemData = {
+      id: item.id,
+      isDelete: !item.isDelete,
+    };
+    updateMutate(itemData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("posts");
+      },
+      onError: (error) => {
+        console.log("error : ", error);
+      },
+    });
     setDeletePw("");
+    return;
   };
   const deletePostValue = (item) => {
-    const newPosts = [...posts];
-    const idx = newPosts.findIndex((post) => post.id === item.id);
-    newPosts[idx].isDelete = false;
-    setPosts(newPosts);
-
     if (item.userPw === deletePw) {
       Alert.alert("삭제", "정말 삭제하시겠습니까?", [
         {
           text: "취소",
           style: "cancel",
-          // onPress: () => console.log("취소 클릭!")
         },
         {
           text: "삭제",
           style: "destructive",
           onPress: async () => {
-            try {
-              await axios.delete(`http://192.168.35.126:3001/posts/${item.id}`);
-              const newPosts = posts.filter((i) => i.id !== item.id);
-              setPosts(newPosts);
-              setDeletePw("");
-            } catch (error) {
-              console.log("error : ", error);
-            }
+            deleteMutate(item, {
+              onSuccess: () => {
+                queryClient.invalidateQueries("posts");
+              },
+              onError: (error) => {
+                console.log("error : ", error);
+              },
+            });
+            setDeletePw("");
           },
         },
       ]);
       return;
     } else {
-      alert("암호가 틀렸습니다222");
+      alert("암호가 틀렸습니다.");
       return;
     }
   };
 
-  const editPost = (id) => {
-    const newPosts = [...posts];
-    const idx = newPosts.findIndex((post) => post.id === id);
-    newPosts[idx].isEdit = !newPosts[idx].isEdit;
-    newPosts[idx].isDelete = !newPosts[idx].isDelete;
-    setPosts(newPosts);
+  const editPost = (item) => {
+    const itemData = {
+      id: item.id,
+      isEdit: !item.isEdit,
+      isDelete: !item.isDelete,
+    };
+    updateMutate(itemData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("posts");
+      },
+      onError: (error) => {
+        console.log("error : ", error);
+      },
+    });
     setDeletePw("");
     return;
   };
 
-  const editPostValue = async (item) => {
-    // id 값받아서 배열 요소찾기(idx)
-    const newPosts = [...posts];
-    const idx = newPosts.findIndex((post) => post.id === item.id);
+  const editPostValue = (item) => {
     if (item.userPw === deletePw) {
-      try {
-        const newPost = {
-          userId: editId,
-          content: editContent,
-          isEdit: false,
-          isDelete: false,
-        };
-        newPosts[idx].userId = editId;
-        newPosts[idx].content = editContent;
-        newPosts[idx].isEdit = false;
-        newPosts[idx].isDelete = false;
-        await axios.patch(
-          `http://192.168.35.126:3001/posts/${item.id}`,
-          newPost
-        );
-        setPosts(newPosts);
-        setEditId("");
-        setEditContent("");
-        return;
-      } catch (error) {
-        console.log("error : ", error);
-      }
+      const newPost = {
+        id: item.id,
+        userId: editId,
+        content: editContent,
+        isEdit: false,
+        isDelete: false,
+      };
+      updateMutate(newPost, {
+        onSuccess: () => {
+          queryClient.invalidateQueries("posts");
+        },
+      });
+      setEditId("");
+      setEditContent("");
+      return;
     } else {
-      newPosts[idx].isEdit = false;
-      newPosts[idx].isDelete = false;
       alert("암호가 틀렸습니다");
-
-      setPosts(newPosts);
-      console.log(newPosts[idx]);
       return;
     }
   };
@@ -216,68 +214,71 @@ export default function Board() {
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-              {posts.map((item) => {
-                return (
-                  <PostItem key={item.id}>
-                    <PostInputContainer>
-                      {item.isEdit ? (
-                        <>
-                          <EditInputId
-                            placeholder="개명할 존함을 작성해주세요."
-                            value={editId}
-                            onChangeText={setEditId}
-                            onSubmitEditing={() => editPostValue(item)}
-                          />
-                          <EditInputContent
-                            placeholder="수정할 벽보 내용을 입력해주세요."
-                            onChangeText={setEditContent}
-                            onSubmitEditing={() => editPostValue(item)}
-                            value={editContent}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <PostItemText
-                            style={{
-                              fontSize: 12,
-                              marginLeft: 4,
-                              marginBottom: 8,
-                            }}
-                          >
-                            {item.userId}
-                          </PostItemText>
-                          <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>
-                            {item.content}
-                          </PostItemText>
-                        </>
-                      )}
-                    </PostInputContainer>
-                    <ConfirmInputPwBtn>
-                      <ConfirmInputPwContainer>
-                        {item.isDelete && (
-                          <ConfirmInputPw
-                            placeholder="암호"
-                            onChangeText={setDeletePw}
-                            onSubmitEditing={() =>
-                              item.isEdit
-                                ? editPostValue(item)
-                                : deletePostValue(item)
-                            }
-                          />
+              {data?.data &&
+                data.data.map((item) => {
+                  return (
+                    <PostItem key={item.id}>
+                      <PostInputContainer>
+                        {item.isEdit ? (
+                          <>
+                            <EditInputId
+                              placeholder="개명할 존함을 작성해주세요."
+                              onChangeText={setEditId}
+                              onSubmitEditing={() => editPostValue(item)}
+                              value={editId}
+                            />
+                            <EditInputContent
+                              placeholder="수정할 벽보 내용을 입력해주세요."
+                              onChangeText={setEditContent}
+                              onSubmitEditing={() => editPostValue(item)}
+                              value={editContent}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <PostItemText
+                              style={{
+                                fontSize: 12,
+                                marginLeft: 4,
+                                marginBottom: 8,
+                              }}
+                            >
+                              {item.userId}
+                            </PostItemText>
+                            <PostItemText
+                              style={{ fontSize: 16, marginLeft: 8 }}
+                            >
+                              {item.content}
+                            </PostItemText>
+                          </>
                         )}
-                      </ConfirmInputPwContainer>
-                      <PostBtnContainer>
-                        <TouchableOpacity onPress={() => editPost(item.id)}>
-                          <Text> 수정</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => deletePost(item.id)}>
-                          <Text> 삭제</Text>
-                        </TouchableOpacity>
-                      </PostBtnContainer>
-                    </ConfirmInputPwBtn>
-                  </PostItem>
-                );
-              })}
+                      </PostInputContainer>
+                      <ConfirmInputPwBtn>
+                        <ConfirmInputPwContainer>
+                          {item.isDelete && (
+                            <ConfirmInputPw
+                              placeholder="암호"
+                              onChangeText={setDeletePw}
+                              onSubmitEditing={() =>
+                                item.isEdit
+                                  ? editPostValue(item)
+                                  : deletePostValue(item)
+                              }
+                            />
+                          )}
+                        </ConfirmInputPwContainer>
+                        <PostBtnContainer>
+                          <TouchableOpacity onPress={() => editPost(item)}>
+                            <Text> 수정</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => deletePost(item)}>
+                            <Text> 삭제</Text>
+                          </TouchableOpacity>
+                        </PostBtnContainer>
+                      </ConfirmInputPwBtn>
+                    </PostItem>
+                  );
+                })}
             </KeyboardAvoidingView>
           </PostContainer>
         </ScrollView>
@@ -403,10 +404,8 @@ const ConfirmInputPw = styled.TextInput`
 `;
 
 const ConfirmInputPwContainer = styled.View`
-  /* flex: 1; */
   flex-direction: row;
   justify-content: flex-end;
-  /* margin-bottom: 40px; */
 `;
 
 const ConfirmInputPwBtn = styled.View`
