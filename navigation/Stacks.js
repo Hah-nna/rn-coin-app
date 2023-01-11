@@ -17,7 +17,7 @@ export default function Stacks({ navigation: { goBack } }) {
         headerTitleAlign: "center",
         headerTintColor: isDark ? "white" : "black",
         headerStyle: {
-          backgroundColor: isDark ? "#273c75" : "#efddae",
+          backgroundColor: isDark ? "#273c75" : "white",
         },
         headerLeft: () => (
           <TouchableOpacity onPress={() => goBack()}>
