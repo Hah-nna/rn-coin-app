@@ -13,6 +13,7 @@ const Tabs = () => {
       <Tab.Screen
         options={{
           title: "어서오세요.",
+          headerTitleAlign: "center",
           tabBarLabel: "家",
           tabBarIcon: () => (
             <FontAwesome5 name="warehouse" size={20} color="#a58224" />
@@ -25,6 +26,7 @@ const Tabs = () => {
       <Tab.Screen
         options={{
           title: "놀음판",
+          headerTitleAlign: "center",
           tabBarLabel: "놀음판",
           tabBarIcon: () => (
             <MaterialCommunityIcons
