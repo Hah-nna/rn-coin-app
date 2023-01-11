@@ -20,8 +20,7 @@ const MainTopCoins = ({ coin }) => {
             coinId: coin.id,
           },
         })
-      }
-    >
+      }>
       <TopRateCoin>
         <Image
           source={{

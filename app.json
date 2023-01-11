@@ -12,8 +12,7 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/a3668281-cdb7-4d76-9c3e-edff5c65904e"
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -30,11 +29,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "a3668281-cdb7-4d76-9c3e-edff5c65904e"
-      }
-    },
+    
     "runtimeVersion": {
       "policy": "sdkVersion"
     }

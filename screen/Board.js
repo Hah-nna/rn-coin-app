@@ -196,6 +196,7 @@ export default function Board() {
                 value={userId}
                 textContentType="username"
                 placeholder="존함"
+                placeholderTextColor={"#333"}
               />
               <InputPw
                 onSubmitEditing={addPost}
@@ -203,6 +204,7 @@ export default function Board() {
                 value={userPw}
                 textContentType="password"
                 placeholder="암호"
+                placeholderTextColor={"#333"}
               />
             </UserInfo>
             <InputContent
@@ -210,14 +212,14 @@ export default function Board() {
               onChangeText={setContent}
               value={content}
               placeholder="Comment writing, PLZ ENTER "
+              placeholderTextColor={"#333"}
             />
           </InputContainer>
 
           <InputTitle>놀음판 벽보</InputTitle>
           <PostContainer>
             <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
+              behavior={Platform.OS === "ios" ? "padding" : "height"}>
               {data?.data &&
                 data.data.map((item) => {
                   return (
@@ -245,13 +247,11 @@ export default function Board() {
                                 fontSize: 12,
                                 marginLeft: 4,
                                 marginBottom: 8,
-                              }}
-                            >
+                              }}>
                               {item.userId}
                             </PostItemText>
                             <PostItemText
-                              style={{ fontSize: 16, marginLeft: 8 }}
-                            >
+                              style={{ fontSize: 16, marginLeft: 8 }}>
                               {item.content}
                             </PostItemText>
                           </>
@@ -321,10 +321,11 @@ const SayingContainer = styled.View`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
+  /* height: 50px; */
+
   margin-bottom: 12px;
   border: 1px solid #000;
-  padding: 2px;
+  padding: 12px 8px;
 `;
 
 const InputContainer = styled.View``;
@@ -368,6 +369,7 @@ const PostContainer = styled.View`
 `;
 
 const PostItem = styled.View`
+  position: relative;
   height: 80px;
   margin-bottom: 12px;
   padding: 8px;
@@ -383,9 +385,11 @@ const PostItemText = styled.Text`
 `;
 
 const PostBtnContainer = styled.View`
-  width: 100%;
+  position: absolute;
+  right: 0;
+  width: 50%;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 const EditInputContent = styled.TextInput`

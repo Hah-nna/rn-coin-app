@@ -1,5 +1,6 @@
 import styled from "@emotion/native";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
+import { StatusBar } from "react-native";
 import { Text, SafeAreaView, Image } from "react-native";
 import Swiper from "react-native-swiper";
 import MainTopCoins from "../components/MainTopCoins";
@@ -9,8 +10,11 @@ import CoinListItem from "../components/CoinListItem";
 import { useInfiniteQuery } from "react-query";
 import { useState } from "react";
 import coinPriceSlice from "../util/coinPriceSlice";
+import { useColorScheme } from "react-native";
 
 export default function Main() {
+  const isDark = useColorScheme() === "dark";
+
   const [searchCoinInfo, setSearchCoin] = useState("");
   const { data, isLoading } = useQuery("topCoins", getTopCoins);
   const { data: searchCoinData } = useQuery("searchCoins", searchCoin);
@@ -47,9 +51,10 @@ export default function Main() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: isDark ? "#273c75" : "#f2f2f2" }}>
       <Container>
-        <StatusBar style="auto" />
+        <StatusBar barStyle="dark-content" />
         <HeaderContainer>
           <Logo source={require("../assets/icon.png")} />
         </HeaderContainer>

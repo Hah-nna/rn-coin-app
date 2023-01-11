@@ -36,7 +36,7 @@ export default function Detail({
   } = data;
 
   return (
-    <ScrollView>
+    <ScrollContainer>
       <Container>
         {data && (
           <>
@@ -97,13 +97,15 @@ export default function Detail({
           </>
         )}
       </Container>
-    </ScrollView>
+    </ScrollContainer>
   );
 }
+const ScrollContainer = styled.ScrollView`
+  background-color: ${({ theme }) => theme.backgroundColor};
+`;
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${({ theme }) => theme.backgroundColor};
 `;
 
 const HeaderContainer = styled.View`
@@ -127,7 +129,7 @@ const UpdatedDateContainer = styled.View`
 
 const UpdatedDate = styled.Text`
   font-size: 12px;
-  color: gray;
+  color: #333;
 `;
 
 const BackgroundImg = styled.ImageBackground`
@@ -168,7 +170,8 @@ const HighFlowTitle = styled.Text`
 `;
 
 const HighFlowPrice = styled.Text`
-  font-size: 20px;
+  font-size: 18px;
+  margin-top: 12px;
 `;
 const GambleWrap = styled.View`
   align-items: center;
