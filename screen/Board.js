@@ -269,10 +269,14 @@ export default function Board() {
                         </ConfirmInputPwContainer>
                         <PostBtnContainer>
                           <TouchableOpacity onPress={() => editPost(item)}>
-                            <Text> 수정</Text>
+                            <Text>{item.isEdit ? "취소" : "수정"}</Text>
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => deletePost(item)}>
-                            <Text> 삭제</Text>
+                            <Text>
+                              {item.isEdit && item.isDelete === false
+                                ? "취소"
+                                : "삭제"}
+                            </Text>
                           </TouchableOpacity>
                         </PostBtnContainer>
                       </ConfirmInputPwBtn>
