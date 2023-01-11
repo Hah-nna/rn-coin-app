@@ -13,6 +13,7 @@ const Tabs = () => {
       <Tab.Screen
         options={{
           title: "어서오세요.",
+          headerTitleStyle: { fontFamily: "SongMyung-Regular" },
           headerTitleAlign: "center",
           tabBarLabel: "家",
           tabBarIcon: () => (
@@ -26,6 +27,7 @@ const Tabs = () => {
       <Tab.Screen
         options={{
           title: "놀음판",
+          headerTitleStyle: { fontFamily: "SongMyung-Regular" },
           headerTitleAlign: "center",
           tabBarLabel: "놀음판",
           tabBarIcon: () => (
