@@ -24,7 +24,8 @@ export default function CoinListItem({ coins }) {
             coinId: id,
           },
         })
-      }>
+      }
+    >
       <CoinItem>
         <FirstItemContainer>
           <Image
@@ -57,7 +58,7 @@ const CoinItem = styled.View`
 `;
 
 const FirstItemContainer = styled.View`
-  flex: 1.5;
+  flex: 2;
   align-items: center;
   flex-direction: row;
 `;
@@ -73,5 +74,5 @@ const CoinNameWrap = styled.View`
 `;
 
 const CoinPriceWrap = styled.View`
-  flex: 1.5;
+  flex: 2;
 `;

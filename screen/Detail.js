@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, ScrollView } from "react-native";
 import styled from "@emotion/native";
 import { useQuery } from "react-query";
 import { getCoinById } from "../api";
@@ -36,66 +36,68 @@ export default function Detail({
   } = data;
 
   return (
-    <Container>
-      {data && (
-        <>
-          <HeaderContainer>
-            <Image
-              source={{
-                uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
-              }}
-              style={{ width: 36, height: 36, marginRight: 12 }}
-            />
-            <HeaderTitle>{name}</HeaderTitle>
-          </HeaderContainer>
-          <UpdatedDateContainer>
-            <UpdatedDate>{last_updated.split("T")[0]}</UpdatedDate>
-          </UpdatedDateContainer>
-          <View>
-            <BackgroundImg source={require("../assets/paper.png")}>
-              <CoinPrice>{coinPriceSlice(price)} 냥</CoinPrice>
-              <CoinPercentContainer>
-                <CoinPercentItem>
-                  <CoinPercentContent>15m</CoinPercentContent>
-                  <CoinPercentContent percent={percent_change_15m}>
-                    {percent_change_15m} %
-                  </CoinPercentContent>
-                </CoinPercentItem>
-                <CoinPercentItem>
-                  <CoinPercentContent>30m</CoinPercentContent>
-                  <CoinPercentContent percent={percent_change_30m}>
-                    {percent_change_30m} %
-                  </CoinPercentContent>
-                </CoinPercentItem>
-                <CoinPercentItem>
-                  <CoinPercentContent>1h</CoinPercentContent>
-                  <CoinPercentContent percent={percent_change_1h}>
-                    {percent_change_1h} %
-                  </CoinPercentContent>
-                </CoinPercentItem>
-                <CoinPercentItem>
-                  <CoinPercentContent>24h</CoinPercentContent>
-                  <CoinPercentContent percent={percent_change_24h}>
-                    {percent_change_24h} %
-                  </CoinPercentContent>
-                </CoinPercentItem>
-              </CoinPercentContainer>
-              <HighFlowContainer>
-                <HighFlowTitle>
-                  고점 대비 흐름 : {percent_from_price_ath} %
-                </HighFlowTitle>
-                <HighFlowPrice>
-                  절대 다시 안 오는 가격 : {coinPriceSlice(ath_price)} 냥
-                </HighFlowPrice>
-              </HighFlowContainer>
-            </BackgroundImg>
-            <GambleWrap>
-              <GambleImage source={require("../assets/gamble.png")} />
-            </GambleWrap>
-          </View>
-        </>
-      )}
-    </Container>
+    <ScrollView>
+      <Container>
+        {data && (
+          <>
+            <HeaderContainer>
+              <Image
+                source={{
+                  uri: `https://cryptoicons.org/api/icon/${symbol.toLowerCase()}/500`,
+                }}
+                style={{ width: 36, height: 36, marginRight: 12 }}
+              />
+              <HeaderTitle>{name}</HeaderTitle>
+            </HeaderContainer>
+            <UpdatedDateContainer>
+              <UpdatedDate>{last_updated.split("T")[0]}</UpdatedDate>
+            </UpdatedDateContainer>
+            <View>
+              <BackgroundImg source={require("../assets/paper.png")}>
+                <CoinPrice>{coinPriceSlice(price)} 냥</CoinPrice>
+                <CoinPercentContainer>
+                  <CoinPercentItem>
+                    <CoinPercentContent>15m</CoinPercentContent>
+                    <CoinPercentContent percent={percent_change_15m}>
+                      {percent_change_15m} %
+                    </CoinPercentContent>
+                  </CoinPercentItem>
+                  <CoinPercentItem>
+                    <CoinPercentContent>30m</CoinPercentContent>
+                    <CoinPercentContent percent={percent_change_30m}>
+                      {percent_change_30m} %
+                    </CoinPercentContent>
+                  </CoinPercentItem>
+                  <CoinPercentItem>
+                    <CoinPercentContent>1h</CoinPercentContent>
+                    <CoinPercentContent percent={percent_change_1h}>
+                      {percent_change_1h} %
+                    </CoinPercentContent>
+                  </CoinPercentItem>
+                  <CoinPercentItem>
+                    <CoinPercentContent>24h</CoinPercentContent>
+                    <CoinPercentContent percent={percent_change_24h}>
+                      {percent_change_24h} %
+                    </CoinPercentContent>
+                  </CoinPercentItem>
+                </CoinPercentContainer>
+                <HighFlowContainer>
+                  <HighFlowTitle>
+                    고점 대비 흐름 : {percent_from_price_ath} %
+                  </HighFlowTitle>
+                  <HighFlowPrice>
+                    절대 다시 안 오는 가격 : {coinPriceSlice(ath_price)} 냥
+                  </HighFlowPrice>
+                </HighFlowContainer>
+              </BackgroundImg>
+              <GambleWrap>
+                <GambleImage source={require("../assets/gamble.png")} />
+              </GambleWrap>
+            </View>
+          </>
+        )}
+      </Container>
+    </ScrollView>
   );
 }
 

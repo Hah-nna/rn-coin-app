@@ -1,6 +1,6 @@
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
-import { Text, SafeAreaView, TextInput, View, Image } from "react-native";
+import { Text, SafeAreaView, Image } from "react-native";
 import Swiper from "react-native-swiper";
 import MainTopCoins from "../components/MainTopCoins";
 import { useQuery } from "react-query";
@@ -61,7 +61,6 @@ export default function Main() {
               .slice(0, 5)
               .map((coin) => <MainTopCoins key={coin.id} coin={coin} />)}
         </Swiper>
-
         <ListHeader>
           <ListHeaderText>엽전 장부</ListHeaderText>
           <SearchTextInput
@@ -71,7 +70,9 @@ export default function Main() {
         </ListHeader>
         {searchCoinInfo === "" ? (
           <SearchView>
-            <Text style={{ color: "gray" }}>검색된 코인</Text>
+            <Text style={{ color: "gray" }}>
+              엽전의 상징(심볼)을 검색해보세요.
+            </Text>
           </SearchView>
         ) : (
           <SearchView>
