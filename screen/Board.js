@@ -2,14 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
 import uuid from "react-native-uuid";
-import {
-  ScrollView,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  Alert,
-  KeyboardAvoidingView,
-} from "react-native";
+import { ScrollView, Text, SafeAreaView, TouchableOpacity, Alert, KeyboardAvoidingView, useColorScheme } from "react-native";
 
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
@@ -18,6 +11,7 @@ import { createPost, getPost, removePost, updatePost } from "../api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 export default function Board() {
+  const isDark = useColorScheme() === "dark";
   const queryClient = useQueryClient();
 
   const [userId, setUserId] = useState("");
@@ -29,18 +23,10 @@ export default function Board() {
 
   const [deletePw, setDeletePw] = useState("");
 
-  const {
-    isLoading: getLoading,
-    isError,
-    data,
-    error,
-  } = useQuery("posts", getPost);
-  const { isLoading: createLoading, mutate: createMutate } =
-    useMutation(createPost);
-  const { isLoading: editLoading, mutate: updateMutate } =
-    useMutation(updatePost);
-  const { isLoading: deleteLoading, mutate: deleteMutate } =
-    useMutation(removePost);
+  const { isLoading: getLoading, isError, data, error } = useQuery("posts", getPost);
+  const { isLoading: createLoading, mutate: createMutate } = useMutation(createPost);
+  const { isLoading: editLoading, mutate: updateMutate } = useMutation(updatePost);
+  const { isLoading: deleteLoading, mutate: deleteMutate } = useMutation(removePost);
 
   const addPost = async () => {
     const userIdValue = userId.trim();
@@ -197,7 +183,7 @@ export default function Board() {
                 value={userId}
                 textContentType="username"
                 placeholder="존함"
-                placeholderTextColor={"#333"}
+                placeholderTextColor={isDark ? "white" : "#333"}
               />
               <InputPw
                 maxLength={4}
@@ -206,7 +192,7 @@ export default function Board() {
                 value={userPw}
                 textContentType="password"
                 placeholder="암호"
-                placeholderTextColor={"#333"}
+                placeholderTextColor={isDark ? "white" : "#333"}
               />
             </UserInfo>
             <InputContent
@@ -215,14 +201,13 @@ export default function Board() {
               onChangeText={setContent}
               value={content}
               placeholder="Comment writing, PLZ ENTER "
-              placeholderTextColor={"#333"}
+              placeholderTextColor={isDark ? "white" : "#333"}
             />
           </InputContainer>
 
           <InputTitle>놀음판 벽보</InputTitle>
-          <PostContainer>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}>
+          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <PostContainer>
               {data?.data &&
                 data.data.map((item) => {
                   return (
@@ -250,13 +235,11 @@ export default function Board() {
                                 fontSize: 12,
                                 marginLeft: 4,
                                 marginBottom: 8,
-                              }}>
+                              }}
+                            >
                               {item.userId}
                             </PostItemText>
-                            <PostItemText
-                              style={{ fontSize: 16, marginLeft: 8 }}>
-                              {item.content}
-                            </PostItemText>
+                            <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>{item.content}</PostItemText>
                           </>
                         )}
                       </PostInputContainer>
@@ -266,11 +249,7 @@ export default function Board() {
                             <ConfirmInputPw
                               placeholder="암호"
                               onChangeText={setDeletePw}
-                              onSubmitEditing={() =>
-                                item.isEdit
-                                  ? editPostValue(item)
-                                  : deletePostValue(item)
-                              }
+                              onSubmitEditing={() => (item.isEdit ? editPostValue(item) : deletePostValue(item))}
                             />
                           )}
                         </ConfirmInputPwContainer>
@@ -279,19 +258,15 @@ export default function Board() {
                             <Text>{item.isEdit ? "취소" : "수정"}</Text>
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => deletePost(item)}>
-                            <Text>
-                              {item.isDelete && item.isEdit === false
-                                ? "취소"
-                                : "삭제"}
-                            </Text>
+                            <Text>{item.isDelete && item.isEdit === false ? "취소" : "삭제"}</Text>
                           </TouchableOpacity>
                         </PostBtnContainer>
                       </ConfirmInputPwBtn>
                     </PostItem>
                   );
                 })}
-            </KeyboardAvoidingView>
-          </PostContainer>
+            </PostContainer>
+          </KeyboardAvoidingView>
         </ScrollView>
       </Container>
     </SafeAreaView>
@@ -301,6 +276,7 @@ export default function Board() {
 const Container = styled.View`
   padding: 8px;
   flex: 1;
+  background-color: ${({ theme }) => theme.backgroundColor};
 `;
 
 const HeaderContainer = styled.View`
@@ -348,7 +324,7 @@ const InputId = styled.TextInput`
   width: 48%;
   height: 30px;
   padding: 0 12px;
-  border: 1px solid #333;
+  border: 1px solid ${(isDark) => (isDark ? "white" : "#333")};
   border-radius: 8px;
 `;
 
@@ -356,19 +332,20 @@ const InputPw = styled.TextInput`
   width: 48%;
   height: 30px;
   padding: 0 12px;
-  border: 1px solid #333;
+  border: 1px solid ${(isDark) => (isDark ? "white" : "#333")};
   border-radius: 8px;
 `;
 const InputContent = styled.TextInput`
   height: 40px;
   margin-bottom: 12px;
   padding: 0 12px;
-  border: 1px solid #333;
+  border: 1px solid ${(isDark) => (isDark ? "white" : "#333")};
   border-radius: 8px;
 `;
 
 const PostContainer = styled.View`
   flex: 1;
+  flex-direction: column-reverse;
 `;
 
 const PostItem = styled.View`

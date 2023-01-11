@@ -20,7 +20,8 @@ const MainTopCoins = ({ coin }) => {
             coinId: coin.id,
           },
         })
-      }>
+      }
+    >
       <TopRateCoin>
         <Image
           source={{
@@ -30,9 +31,7 @@ const MainTopCoins = ({ coin }) => {
         />
         <TopRateCoinName>{name}</TopRateCoinName>
         <TopRateCoinPrice>{coinPriceSlice(price)} 냥</TopRateCoinPrice>
-        <TopRateCoinPercent percent={percent_from_price_ath}>
-          {percent_from_price_ath}%
-        </TopRateCoinPercent>
+        <TopRateCoinPercent percent={percent_from_price_ath}>{percent_from_price_ath}%</TopRateCoinPercent>
       </TopRateCoin>
     </TouchableOpacity>
   );
@@ -41,18 +40,20 @@ const MainTopCoins = ({ coin }) => {
 const TopRateCoin = styled.View`
   padding: 16px 0;
   border-radius: 10px;
-  background-color: #efddae;
+  background-color: ${({ theme }) => theme.itembgColor};
   justify-content: center;
   align-items: center;
 `;
 
 const TopRateCoinName = styled.Text`
   font-size: 28px;
+  color: ${({ theme }) => theme.title};
 `;
 
 const TopRateCoinPrice = styled.Text`
   margin: 4px 0;
   font-size: 20px;
+  color: ${({ theme }) => theme.title};
 `;
 
 const TopRateCoinPercent = styled.Text`

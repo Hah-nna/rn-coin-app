@@ -54,7 +54,7 @@ const CoinItem = styled.View`
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
-  background-color: #efddae;
+  background-color: ${({ theme }) => theme.itembgColor};
 `;
 
 const FirstItemContainer = styled.View`
@@ -64,9 +64,9 @@ const FirstItemContainer = styled.View`
 `;
 
 const CoinItemText = styled.Text`
-  color: #333;
   text-align: center;
   font-weight: bold;
+  color: ${({ theme }) => theme.title};
 `;
 
 const CoinNameWrap = styled.View`
