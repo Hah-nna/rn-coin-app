@@ -191,6 +191,7 @@ export default function Board() {
             <InputTitle>벽보 붙이기</InputTitle>
             <UserInfo>
               <InputId
+                maxLength={10}
                 onSubmitEditing={addPost}
                 onChangeText={setUserId}
                 value={userId}
@@ -198,6 +199,7 @@ export default function Board() {
                 placeholder="존함"
               />
               <InputPw
+                maxLength={4}
                 onSubmitEditing={addPost}
                 onChangeText={setUserPw}
                 value={userPw}
@@ -206,6 +208,7 @@ export default function Board() {
               />
             </UserInfo>
             <InputContent
+              maxLength={32}
               onSubmitEditing={addPost}
               onChangeText={setContent}
               value={content}
