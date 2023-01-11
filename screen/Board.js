@@ -191,6 +191,7 @@ export default function Board() {
             <InputTitle>벽보 붙이기</InputTitle>
             <UserInfo>
               <InputId
+                maxLength={10}
                 onSubmitEditing={addPost}
                 onChangeText={setUserId}
                 value={userId}
@@ -199,6 +200,7 @@ export default function Board() {
                 placeholderTextColor={"#333"}
               />
               <InputPw
+                maxLength={4}
                 onSubmitEditing={addPost}
                 onChangeText={setUserPw}
                 value={userPw}
@@ -208,6 +210,7 @@ export default function Board() {
               />
             </UserInfo>
             <InputContent
+              maxLength={32}
               onSubmitEditing={addPost}
               onChangeText={setContent}
               value={content}
@@ -277,7 +280,7 @@ export default function Board() {
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => deletePost(item)}>
                             <Text>
-                              {item.isEdit && item.isDelete === false
+                              {item.isDelete && item.isEdit === false
                                 ? "취소"
                                 : "삭제"}
                             </Text>
