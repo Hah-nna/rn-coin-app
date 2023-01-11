@@ -43,12 +43,12 @@ export const createPost = async (item) => {
 };
 export const updatePost = async (item) => {
   return await axios.patch(
-    `https://outgoing-heartbreaking-baron.glitch.me/posts${item.id}`,
+    `https://outgoing-heartbreaking-baron.glitch.me/posts/${item.id}`,
     item
   );
 };
 export const removePost = async (item) => {
   return await axios.delete(
-    `https://outgoing-heartbreaking-baron.glitch.me/posts${item.id}`
+    `https://outgoing-heartbreaking-baron.glitch.me/posts/${item.id}`
   );
 };
