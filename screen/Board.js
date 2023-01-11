@@ -28,7 +28,7 @@ export default function Board() {
   const [deletePw, setDeletePw] = useState("");
 
   const getPost = async () => {
-    const getPostData = await axios.get("http://localhost:3001/posts");
+    const getPostData = await axios.get("http://192.168.200.115:3001/posts");
     // const getPostData = await axios.get("http://192.168.200.115:3001/posts");
 
     /**
@@ -67,7 +67,7 @@ export default function Board() {
       setContent("");
       return;
     }
-    await axios.post("http://localhost:3001/posts", {
+    await axios.post("http://192.168.200.115:3001/posts", {
       id: uuid.v4(),
       userId,
       userPw,
@@ -103,7 +103,7 @@ export default function Board() {
     setPosts(newPosts);
 
     if (item.userPw === deletePw) {
-      Alert.alert("Todo 삭제", "정말 삭제하시겠습니까?", [
+      Alert.alert("삭제", "정말 삭제하시겠습니까?", [
         {
           text: "취소",
           style: "cancel",
@@ -114,7 +114,9 @@ export default function Board() {
           style: "destructive",
           onPress: async () => {
             try {
-              await axios.delete(`http://localhost:3001/posts/${item.id}`);
+              await axios.delete(
+                `http://192.168.200.115:3001/posts/${item.id}`
+              );
               const newPosts = posts.filter((i) => i.id !== item.id);
               setPosts(newPosts);
             } catch (error) {
@@ -156,7 +158,10 @@ export default function Board() {
         newPosts[idx].content = editContent;
         newPosts[idx].isEdit = false;
         newPosts[idx].isDelete = false;
-        await axios.patch(`http://localhost:3001/posts/${item.id}`, newPost);
+        await axios.patch(
+          `http://192.168.200.115:3001/posts/${item.id}`,
+          newPost
+        );
         setPosts(newPosts);
         return;
       } catch (error) {
