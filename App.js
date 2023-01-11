@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import Root from "./navigation/Root";
-import { setCustomText } from "react-native-global-props";
+import { setCustomText, setCustomTextInput } from "react-native-global-props";
 import * as SplashScreen from "expo-splash-screen";
 import { loadAsync } from "expo-font";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -47,8 +47,16 @@ export default function App() {
       fontFamily: "SongMyung-Regular",
     },
   };
+  const customInputProps = {
+    style: {
+      backgroundColor: isDark ? "#888" : "#eee",
+      borderRadius: 12,
+      marginBottom: 4,
+    },
+  };
 
   setCustomText(customTextProps);
+  setCustomTextInput(customInputProps);
 
   return (
     <QueryClientProvider client={queryClient}>
