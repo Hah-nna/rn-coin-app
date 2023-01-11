@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import styled from "@emotion/native";
 import coinPriceSlice from "../util/coinPriceSlice";
 import { useNavigation } from "@react-navigation/native";
@@ -24,8 +24,7 @@ export default function CoinListItem({ coins }) {
             coinId: id,
           },
         })
-      }
-    >
+      }>
       <CoinItem>
         <FirstItemContainer>
           <Image
@@ -36,8 +35,12 @@ export default function CoinListItem({ coins }) {
           />
           <CoinItemText>{symbol}</CoinItemText>
         </FirstItemContainer>
-        <CoinItemText>{name}</CoinItemText>
-        <CoinItemText>{coinPriceSlice(price)} 냥</CoinItemText>
+        <CoinNameWrap>
+          <CoinItemText>{name}</CoinItemText>
+        </CoinNameWrap>
+        <CoinPriceWrap>
+          <CoinItemText>{coinPriceSlice(price)} 냥</CoinItemText>
+        </CoinPriceWrap>
       </CoinItem>
     </TouchableOpacity>
   );
@@ -54,11 +57,21 @@ const CoinItem = styled.View`
 `;
 
 const FirstItemContainer = styled.View`
+  flex: 1.5;
   align-items: center;
   flex-direction: row;
 `;
 
 const CoinItemText = styled.Text`
   color: #333;
+  text-align: center;
   font-weight: bold;
+`;
+
+const CoinNameWrap = styled.View`
+  flex: 4;
+`;
+
+const CoinPriceWrap = styled.View`
+  flex: 1.5;
 `;
