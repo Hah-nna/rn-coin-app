@@ -2,6 +2,10 @@ import axios from "axios";
 
 const BASE_URL = "https://api.coinpaprika.com/v1/";
 
+// export const BASE_ADDRESS = () => {
+//   return `http://192.168.200.115:3001/posts`;
+// };
+
 export const getTopCoins = () => axios.get(`${BASE_URL}tickers?quotes=KRW`);
 
 export const getCoinList = () =>
