@@ -22,7 +22,7 @@ export const searchCoin = () => {
 // CRUD
 
 export const getPost = async () => {
-  return await axios.get("http://192.168.35.126:3001/posts");
+  return await axios.get("https://outgoing-heartbreaking-baron.glitch.me");
   // const getPostData = await axios.get("http://192.168.200.115:3001/posts");
 
   /**
@@ -34,11 +34,19 @@ export const getPost = async () => {
 };
 
 export const createPost = async (item) => {
-  return await axios.post("http://192.168.35.126:3001/posts", item);
+  return await axios.post(
+    "https://outgoing-heartbreaking-baron.glitch.me",
+    item
+  );
 };
 export const updatePost = async (item) => {
-  return await axios.patch(`http://192.168.35.126:3001/posts/${item.id}`, item);
+  return await axios.patch(
+    `https://outgoing-heartbreaking-baron.glitch.me/${item.id}`,
+    item
+  );
 };
 export const removePost = async (item) => {
-  return await axios.delete(`http://192.168.35.126:3001/posts/${item.id}`);
+  return await axios.delete(
+    `https://outgoing-heartbreaking-baron.glitch.me/${item.id}`
+  );
 };
