@@ -28,13 +28,13 @@ export default function Board() {
   const [deletePw, setDeletePw] = useState("");
 
   const getPost = async () => {
-    const getPostData = await axios.get("http://192.168.200.115:3001/posts");
+    const getPostData = await axios.get("http://192.168.35.126:3001/posts");
     // const getPostData = await axios.get("http://192.168.200.115:3001/posts");
 
     /**
      * json 서버를 열 때 본인의 ip주소를 맞추어야한다
      * json 서버를 열 때 아래와 같이 입력한다
-     * yarn json-server --watch db.json --port 3001 --host 192.168.200.115(192~부터는 자신의 ip주소임)
+     * yarn json-server --watch db.json --port 3001 --host 192.168.35.126(192~부터는 자신의 ip주소임)
      * api.js에서 자신의 ip주소로 바꾸세요
      */
 
@@ -67,35 +67,24 @@ export default function Board() {
       setContent("");
       return;
     }
-    await axios.post("http://192.168.200.115:3001/posts", {
+    const todoItem = {
       id: uuid.v4(),
       userId,
       userPw,
       content,
       isEdit: false,
       isDelete: false,
-    });
-    setPosts((prev) => [
-      ...prev,
-      {
-        id: uuid.v4(),
-        userId,
-        userPw,
-        content,
-        isEdit: false,
-        isDelete: false,
-      },
-    ]);
+    };
+    await axios.post("http://192.168.35.126:3001/posts", todoItem);
+    setPosts((prev) => [...prev, todoItem]);
   };
-
   const deletePost = (id) => {
     const newPosts = [...posts];
     const idx = newPosts.findIndex((post) => post.id === id);
     newPosts[idx].isDelete = !newPosts[idx].isDelete;
-
     setPosts(newPosts);
+    setDeletePw("");
   };
-
   const deletePostValue = (item) => {
     const newPosts = [...posts];
     const idx = newPosts.findIndex((post) => post.id === item.id);
@@ -114,11 +103,10 @@ export default function Board() {
           style: "destructive",
           onPress: async () => {
             try {
-              await axios.delete(
-                `http://192.168.200.115:3001/posts/${item.id}`
-              );
+              await axios.delete(`http://192.168.35.126:3001/posts/${item.id}`);
               const newPosts = posts.filter((i) => i.id !== item.id);
               setPosts(newPosts);
+              setDeletePw("");
             } catch (error) {
               console.log("error : ", error);
             }
@@ -138,6 +126,7 @@ export default function Board() {
     newPosts[idx].isEdit = !newPosts[idx].isEdit;
     newPosts[idx].isDelete = !newPosts[idx].isDelete;
     setPosts(newPosts);
+    setDeletePw("");
     return;
   };
 
@@ -146,7 +135,6 @@ export default function Board() {
     const newPosts = [...posts];
     const idx = newPosts.findIndex((post) => post.id === item.id);
     if (item.userPw === deletePw) {
-      console.log("item.id : ", item.id);
       try {
         const newPost = {
           userId: editId,
@@ -159,10 +147,12 @@ export default function Board() {
         newPosts[idx].isEdit = false;
         newPosts[idx].isDelete = false;
         await axios.patch(
-          `http://192.168.200.115:3001/posts/${item.id}`,
+          `http://192.168.35.126:3001/posts/${item.id}`,
           newPost
         );
         setPosts(newPosts);
+        setEditId("");
+        setEditContent("");
         return;
       } catch (error) {
         console.log("error : ", error);
@@ -273,7 +263,6 @@ export default function Board() {
                                 ? editPostValue(item)
                                 : deletePostValue(item)
                             }
-                            value={deletePw}
                           />
                         )}
                       </ConfirmInputPwContainer>
