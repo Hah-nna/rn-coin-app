@@ -35,8 +35,8 @@ export default function Main() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery(["getCoins"], getCoinList, {
-    getNextPageParam: (lastPage) => {
-      return lastPage.page + 1;
+    getNextPageParam: () => {
+      return true;
     },
     retry: 100,
   });
