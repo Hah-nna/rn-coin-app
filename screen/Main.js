@@ -1,66 +1,109 @@
 import styled from "@emotion/native";
-import { StatusBar } from "expo-status-bar";
-import {
-  ScrollView,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { Platform, StatusBar as IOSStatusBar } from "react-native";
+import { StatusBar as AndroidStatusBar } from "expo-status-bar";
+import { Text, SafeAreaView, Image } from "react-native";
 import Swiper from "react-native-swiper";
-import { useNavigation } from "@react-navigation/native";
+import MainTopCoins from "../components/MainTopCoins";
+import { useQuery } from "react-query";
+import { getCoinList, getTopCoins, searchCoin } from "../api";
+import CoinListItem from "../components/CoinListItem";
+import { useInfiniteQuery } from "react-query";
+import { useState } from "react";
+import coinPriceSlice from "../util/coinPriceSlice";
+import { useColorScheme } from "react-native";
 
-// <Logo source={require("../assets/icon.png")} />
 export default function Main() {
-  const { navigate } = useNavigation();
+  const isDark = useColorScheme() === "dark";
+
+  const [searchCoinInfo, setSearchCoin] = useState("");
+  const { data, isLoading } = useQuery("topCoins", getTopCoins);
+  const { data: searchCoinData } = useQuery("searchCoins", searchCoin);
+  const submitCoin = (text) => {
+    for (let i = 0; i < 2500; i++) {
+      if (searchCoinData.data[i].symbol.toLowerCase() === text.toLowerCase()) {
+        setSearchCoin(searchCoinData.data[i]);
+        return false;
+      } else {
+        setSearchCoin("");
+      }
+    }
+  };
+  const {
+    data: coins,
+    isLoading: isLoadingCL,
+    error,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(["getCoins"], getCoinList, {
+    getNextPageParam: () => {
+      return true;
+    },
+    retry: 100,
+  });
+  const fetchMore = async () => {
+    if (hasNextPage) {
+      await fetchNextPage();
+    }
+  };
+
+  if (isLoading || isLoadingCL) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: isDark ? "#273c75" : "#f2f2f2" }}
+    >
       <Container>
-        <StatusBar style="auto" />
+        {Platform.OS === "ios" ? (
+          <IOSStatusBar barStyle={"dark-content"} />
+        ) : (
+          <AndroidStatusBar />
+        )}
         <HeaderContainer>
           <Logo source={require("../assets/icon.png")} />
         </HeaderContainer>
-
-        <Swiper>
-          <TouchableOpacity
-            onPress={() =>
-              navigate("Stacks", {
-                screen: "detail",
-              })
-            }
-          >
-            <TopRateCoin>
-              <Image
-                source={{ uri: "https://cryptoicons.org/api/icon/xrp/500" }}
-                style={{ width: 36, height: 36, marginBottom: 12 }}
-              />
-              <TopRateCoinName>BitCoin</TopRateCoinName>
-              <TopRateCoinPrice>90,000,000</TopRateCoinPrice>
-              <TopRateCoinPercent>-48.12%</TopRateCoinPercent>
-            </TopRateCoin>
-          </TouchableOpacity>
+        <ListHeaderText>今日 半時辰 基準 去來量 上位 五</ListHeaderText>
+        <DescText>(금일 반시진 기준 거래량 상위 다섯)</DescText>
+        <Swiper autoplay={true} loop={true} showsPagination={false}>
+          {data &&
+            data.data
+              .slice(0, 5)
+              .map((coin) => <MainTopCoins key={coin.id} coin={coin} />)}
         </Swiper>
-
         <ListHeader>
-          <ListHeaderText>동전 장부</ListHeaderText>
-          <TouchableOpacity>
-            <ListHeaderText>▼ 거름망</ListHeaderText>
-          </TouchableOpacity>
+          <ListHeaderText>엽전 장부</ListHeaderText>
+          <SearchTextInput
+            placeholder="심볼 검색(ex. btc)"
+            onChangeText={submitCoin}
+          />
         </ListHeader>
-
-        <ScrollView>
-          <CoinContainer>
-            <TouchableOpacity>
-              <CoinItem>
-                <CoinItemText>안녕하세용</CoinItemText>
-                <CoinItemText>안녕하세용</CoinItemText>
-                <CoinItemText>안녕하세용</CoinItemText>
-              </CoinItem>
-            </TouchableOpacity>
-          </CoinContainer>
-        </ScrollView>
+        {searchCoinInfo === "" ? (
+          <SearchView>
+            <Text style={{ color: "gray" }}>
+              엽전의 상징(심볼)을 검색해보세요.
+            </Text>
+          </SearchView>
+        ) : (
+          <SearchView>
+            <Image
+              source={{
+                uri: `https://static.coinpaprika.com/coin/${searchCoinInfo.id}/logo.png`,
+              }}
+              style={{ width: 24, height: 24, marginRight: 12 }}
+            />
+            <Text>{searchCoinInfo.symbol}</Text>
+            <Text>{searchCoinInfo.name}</Text>
+            <Text>{coinPriceSlice(searchCoinInfo.quotes.KRW.price)} 냥</Text>
+          </SearchView>
+        )}
+        <CoinContainer
+          onEndReached={fetchMore}
+          onEndReachedThreshold={0.5}
+          data={coins.pages.map((page) => page.data).flat()}
+          renderItem={({ item }) => <CoinListItem coins={item} />}
+          keyExtractor={(item) => item.id}
+        />
       </Container>
     </SafeAreaView>
   );
@@ -82,67 +125,38 @@ const Logo = styled.Image`
   margin-bottom: 10px;
 `;
 
-const TopRateCoin = styled.View`
-  height: 180px;
-  border-radius: 10px;
-  background-color: #efddae;
-  justify-content: center;
-  align-items: center;
-`;
-
-const TopRateLogo = styled.View`
-  flex-direction: "row";
-  justify-content: "center";
-`;
-
-const TopRateCoinName = styled.Text`
-  font-size: 28px;
-  font-weight: bold;
-  font-family: NotoSansKR-Regular;
-`;
-
-const TopRateCoinPrice = styled.Text`
-  font-size: 24px;
-`;
-
-const TopRateCoinPercent = styled.Text`
-  font-size: 18px;
-  color: red;
-`;
-
 const ListHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 12px 0;
+  padding: 4px 0;
   border-radius: 10px;
 `;
 
 const ListHeaderText = styled.Text`
   font-size: 16px;
   font-weight: bold;
-  padding: 8px;
+  padding: 0px 4px;
   color: #a58224;
 `;
-
-const CoinContainer = styled.View`
-  flex: 1;
-  /* height: 100%; */
-  background-color: black;
+const DescText = styled.Text`
+  font-size: 8px;
+  padding: 4px;
+  color: #a58224;
 `;
-
-const CoinItem = styled.View`
-  height: 80px;
-  margin-bottom: 12px;
-  padding: 8px;
+const CoinContainer = styled.FlatList`
+  flex: 2;
+`;
+const SearchView = styled.View`
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  border-radius: 10px;
-  background-color: #efddae;
+  height: 40px;
+  margin: 8px;
 `;
-
-const CoinItemText = styled.Text`
-  color: #333;
-  font-weight: bold;
+const SearchTextInput = styled.TextInput`
+  border: 1px solid gray;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
 `;

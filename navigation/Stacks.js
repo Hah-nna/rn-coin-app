@@ -1,21 +1,28 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, TouchableOpacity, useColorScheme } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import Detail from "../screen/Detail";
+import { useColorScheme } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
 export default function Stacks({ navigation: { goBack } }) {
+  const isDark = useColorScheme() === "dark";
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerTitleAlign: "left",
-        headerTintColor: "#1abc9c",
+        headerTitleStyle: { fontFamily: "SongMyung-Regular" },
+        headerTitle: "엽전 상세보기",
+        headerTitleAlign: "center",
+        headerTintColor: isDark ? "white" : "black",
+        headerStyle: {
+          backgroundColor: isDark ? "#273c75" : "white",
+        },
         headerLeft: () => (
           <TouchableOpacity onPress={() => goBack()}>
-            <Text style={{ color: "#1abc9c" }}>⬅</Text>
-            {/*삼항연산자는 그 자체가 하나의 값으로 참조되기 때문에 key:value
-        형태로 바로 넣을 수 있음.*/}
+            <Text style={{ color: isDark ? "white" : "black" }}>과거로</Text>
+            {/* text color 잘 안 보이는데, 변경할 지 말지 */}
           </TouchableOpacity>
         ),
       }}>
