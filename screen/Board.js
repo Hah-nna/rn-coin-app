@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import styled from "@emotion/native";
 import { StatusBar } from "expo-status-bar";
 import uuid from "react-native-uuid";
-import { ScrollView, Text, SafeAreaView, TouchableOpacity, Alert, KeyboardAvoidingView, useColorScheme } from "react-native";
+import {
+  ScrollView,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  useColorScheme,
+} from "react-native";
 
 import FamousSaying from "../components/FamousSaying";
 import Weather from "../components/Weather";
@@ -23,10 +31,18 @@ export default function Board() {
 
   const [deletePw, setDeletePw] = useState("");
 
-  const { isLoading: getLoading, isError, data, error } = useQuery("posts", getPost);
-  const { isLoading: createLoading, mutate: createMutate } = useMutation(createPost);
-  const { isLoading: editLoading, mutate: updateMutate } = useMutation(updatePost);
-  const { isLoading: deleteLoading, mutate: deleteMutate } = useMutation(removePost);
+  const {
+    isLoading: getLoading,
+    isError,
+    data,
+    error,
+  } = useQuery("posts", getPost);
+  const { isLoading: createLoading, mutate: createMutate } =
+    useMutation(createPost);
+  const { isLoading: editLoading, mutate: updateMutate } =
+    useMutation(updatePost);
+  const { isLoading: deleteLoading, mutate: deleteMutate } =
+    useMutation(removePost);
 
   const addPost = async () => {
     const userIdValue = userId.trim();
@@ -206,67 +222,79 @@ export default function Board() {
           </InputContainer>
 
           <InputTitle>놀음판 벽보</InputTitle>
-          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-            <PostContainer>
-              {data?.data &&
-                data.data.map((item) => {
-                  return (
-                    <PostItem key={item.id}>
-                      <PostInputContainer>
-                        {item.isEdit ? (
-                          <>
-                            <EditInputId
-                              placeholder="개명할 존함을 작성해주세요."
-                              onChangeText={setEditId}
-                              onSubmitEditing={() => editPostValue(item)}
-                              value={editId}
-                            />
-                            <EditInputContent
-                              placeholder="수정할 벽보 내용을 입력해주세요."
-                              onChangeText={setEditContent}
-                              onSubmitEditing={() => editPostValue(item)}
-                              value={editContent}
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <PostItemText
-                              style={{
-                                fontSize: 12,
-                                marginLeft: 4,
-                                marginBottom: 8,
-                              }}
-                            >
-                              {item.userId}
-                            </PostItemText>
-                            <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>{item.content}</PostItemText>
-                          </>
+          {/* <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          > */}
+          <PostContainer>
+            {data?.data &&
+              data.data.map((item) => {
+                return (
+                  <PostItem key={item.id}>
+                    <PostInputContainer>
+                      {item.isEdit ? (
+                        <>
+                          <EditInputId
+                            placeholder="개명할 존함을 작성해주세요."
+                            onChangeText={setEditId}
+                            onSubmitEditing={() => editPostValue(item)}
+                            value={editId}
+                          />
+                          <EditInputContent
+                            placeholder="수정할 벽보 내용을 입력해주세요."
+                            onChangeText={setEditContent}
+                            onSubmitEditing={() => editPostValue(item)}
+                            value={editContent}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <PostItemText
+                            style={{
+                              fontSize: 12,
+                              marginLeft: 4,
+                              marginBottom: 8,
+                            }}
+                          >
+                            {item.userId}
+                          </PostItemText>
+                          <PostItemText style={{ fontSize: 16, marginLeft: 8 }}>
+                            {item.content}
+                          </PostItemText>
+                        </>
+                      )}
+                    </PostInputContainer>
+                    <ConfirmInputPwBtn>
+                      <ConfirmInputPwContainer>
+                        {item.isDelete && (
+                          <ConfirmInputPw
+                            placeholder="암호"
+                            onChangeText={setDeletePw}
+                            onSubmitEditing={() =>
+                              item.isEdit
+                                ? editPostValue(item)
+                                : deletePostValue(item)
+                            }
+                          />
                         )}
-                      </PostInputContainer>
-                      <ConfirmInputPwBtn>
-                        <ConfirmInputPwContainer>
-                          {item.isDelete && (
-                            <ConfirmInputPw
-                              placeholder="암호"
-                              onChangeText={setDeletePw}
-                              onSubmitEditing={() => (item.isEdit ? editPostValue(item) : deletePostValue(item))}
-                            />
-                          )}
-                        </ConfirmInputPwContainer>
-                        <PostBtnContainer>
-                          <TouchableOpacity onPress={() => editPost(item)}>
-                            <Text>{item.isEdit ? "취소" : "수정"}</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={() => deletePost(item)}>
-                            <Text>{item.isDelete && item.isEdit === false ? "취소" : "삭제"}</Text>
-                          </TouchableOpacity>
-                        </PostBtnContainer>
-                      </ConfirmInputPwBtn>
-                    </PostItem>
-                  );
-                })}
-            </PostContainer>
-          </KeyboardAvoidingView>
+                      </ConfirmInputPwContainer>
+                      <PostBtnContainer>
+                        <TouchableOpacity onPress={() => editPost(item)}>
+                          <Text>{item.isEdit ? "취소" : "수정"}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => deletePost(item)}>
+                          <Text>
+                            {item.isDelete && item.isEdit === false
+                              ? "취소"
+                              : "삭제"}
+                          </Text>
+                        </TouchableOpacity>
+                      </PostBtnContainer>
+                    </ConfirmInputPwBtn>
+                  </PostItem>
+                );
+              })}
+          </PostContainer>
+          {/* </KeyboardAvoidingView> */}
         </ScrollView>
       </Container>
     </SafeAreaView>
