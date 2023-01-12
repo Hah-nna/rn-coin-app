@@ -51,30 +51,44 @@ export default function Main() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? "#273c75" : "#f2f2f2" }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: isDark ? "#273c75" : "#f2f2f2" }}
+    >
       <Container>
-        {Platform.OS === "ios" ? <IOSStatusBar barStyle={"dark-content"} /> : <AndroidStatusBar />}
+        {Platform.OS === "ios" ? (
+          <IOSStatusBar barStyle={"dark-content"} />
+        ) : (
+          <AndroidStatusBar />
+        )}
         <HeaderContainer>
           <Logo source={require("../assets/icon.png")} />
         </HeaderContainer>
         <ListHeaderText>今日 半時辰 基準 去來量 上位 五</ListHeaderText>
         <DescText>(금일 반시진 기준 거래량 상위 다섯)</DescText>
         <Swiper autoplay={true} loop={true} showsPagination={false}>
-          {data && data.data.slice(0, 5).map((coin) => <MainTopCoins key={coin.id} coin={coin} />)}
+          {data &&
+            data.data
+              .slice(0, 5)
+              .map((coin) => <MainTopCoins key={coin.id} coin={coin} />)}
         </Swiper>
         <ListHeader>
           <ListHeaderText>엽전 장부</ListHeaderText>
-          <SearchTextInput placeholder="심볼 검색(ex. btc)" onChangeText={submitCoin} />
+          <SearchTextInput
+            placeholder="심볼 검색(ex. btc)"
+            onChangeText={submitCoin}
+          />
         </ListHeader>
         {searchCoinInfo === "" ? (
           <SearchView>
-            <Text style={{ color: "gray" }}>엽전의 상징(심볼)을 검색해보세요.</Text>
+            <Text style={{ color: "gray" }}>
+              엽전의 상징(심볼)을 검색해보세요.
+            </Text>
           </SearchView>
         ) : (
           <SearchView>
             <Image
               source={{
-                uri: `https://cryptoicons.org/api/icon/${searchCoinInfo.symbol.toLowerCase()}/500`,
+                uri: `https://static.coinpaprika.com/coin/${searchCoinInfo.id}/logo.png`,
               }}
               style={{ width: 24, height: 24, marginRight: 12 }}
             />
